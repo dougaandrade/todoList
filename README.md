@@ -26,7 +26,7 @@
 
 - 9 . Se tudo deu certo, vá no seu navegador e coloque **"http://localhost:4200/api/teste"** e/ou **"http://localhost:4200"**. 
 - 10 . Qualquer coisa me mande uma mensagem ou abra um issue.
-- 10 . Forte abraço.
+- 11 . Forte abraço.
 
 
 
