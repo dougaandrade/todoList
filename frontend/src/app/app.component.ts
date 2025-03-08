@@ -1,19 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { TesteService } from './services/teste.service';
+import { LoginService } from './services/login.service';
+import { LoginComponent } from './login/login.component';
 
 @Component({
   selector: 'app-root',
+  standalone : true,
+  imports: [LoginComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent  {
   mensagem: string = '';
 
-  constructor(private testeService: TesteService) { }
+  constructor(private loginService: LoginService) { }
 
-  ngOnInit(): void {
-    this.testeService.getTeste().subscribe(response => {
-      this.mensagem = response;
-    });
-  }
+  // ngOnInit(): void {
+  //   this.loginService.getTeste().subscribe(response => {
+  //     this.mensagem = response;
+  //   });
+  // }
 }
