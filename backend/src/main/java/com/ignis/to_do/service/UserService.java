@@ -26,6 +26,10 @@ public class UserService {
             return new UserDTO(user.getId(), user.getName(), user.getEmail());
     }
 
+    public Iterable<UserDTO> getAllUsers(){
+        return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail())).toList();
+    }
+
     public UserDTO updateUser(long id, UserDTO userDTO){
         User user = userRepository.findById(id).get();
         user.setName(userDTO.getName());
@@ -34,9 +38,12 @@ public class UserService {
         return new UserDTO(user.getId(), user.getName(), user.getEmail());
     }
 
-    public void deleteUser(Long id){ {
+    public void deleteUser(Long id){ 
         User user = userRepository.findById(id).get();
         userRepository.delete(user);
     }
+
+    public boolean validateUser(String name, String email){
+        return userRepository.existsByNameAndEmail(name, email);
     }  
 }
