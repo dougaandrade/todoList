@@ -8,12 +8,17 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User{
 
     @Id
@@ -30,6 +35,11 @@ public class User{
         inverseJoinColumns = @JoinColumn(name = "board_id")
     )
     private List<Board> favoriteBoards;
+
+    public User(String name, String email){
+        this.name = name;
+        this.email = email;
+    }
 
     public Board createBoard(String title){
         Board board = new Board();
