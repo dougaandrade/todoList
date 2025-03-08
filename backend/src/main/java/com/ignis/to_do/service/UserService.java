@@ -25,8 +25,18 @@ public class UserService {
         User user = userRepository.findById(id).get();
             return new UserDTO(user.getId(), user.getName(), user.getEmail());
     }
-    // ATENCAO: Passar somente o ID
-    public void deleteUser(User user){
+
+    public UserDTO updateUser(long id, UserDTO userDTO){
+        User user = userRepository.findById(id).get();
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user = userRepository.save(user);
+        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+    }
+
+    public void deleteUser(Long id){ {
+        User user = userRepository.findById(id).get();
         userRepository.delete(user);
+    }
     }  
 }
