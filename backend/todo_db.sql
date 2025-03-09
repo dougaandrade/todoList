@@ -1,72 +1,44 @@
-CREATE TYPE TaskStatus AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED');
-
-CREATE TYPE NotificationStatus AS ENUM ('READ', 'UNREAD');
-
-CREATE TABLE Board (
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE board (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    owner_id INT,
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE category (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE task_list (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    board_id INT,
+    FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
+);
+
+CREATE TABLE task (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
     description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    status VARCHAR(50) NOT NULL,
+    list_id INT,
+    category_id INT,
+    due_date TIMESTAMP,
+    FOREIGN KEY (list_id) REFERENCES task_list(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL
 );
 
-CREATE TABLE Category (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT
+CREATE TABLE user_favorite_board (
+    user_id INT,
+    board_id INT,
+    PRIMARY KEY (user_id, board_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
 );
-
-CREATE TABLE "User" (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE TaskList (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    board_id INT REFERENCES Board(id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE Task (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    due_date DATE,
-    status TaskStatus,
-    board_id INT REFERENCES Board(id),
-    user_id INT REFERENCES "User"(id),
-    task_list_id INT REFERENCES TaskList(id),  -- Relacionamento com TaskList
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE Favorite (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES "User"(id),
-    task_id INT REFERENCES Task(id),
-    UNIQUE(user_id, task_id)
-);
-
-CREATE TABLE Notification (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES "User"(id),
-    message TEXT NOT NULL,
-    status NotificationStatus DEFAULT 'UNREAD',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE Category_Task (
-    category_id INT REFERENCES Category(id),
-    task_id INT REFERENCES Task(id),
-    PRIMARY KEY(category_id, task_id)
-);
-
-CREATE INDEX idx_user_id ON Task(user_id);
-CREATE INDEX idx_task_status ON Task(status);
-CREATE INDEX idx_task_due_date ON Task(due_date);
-CREATE INDEX idx_task_list_board_id ON TaskList(board_id);
