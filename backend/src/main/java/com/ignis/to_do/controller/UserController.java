@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.service.UserService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User Controller", description = "Gerenciamento de Usuários")
+
 public class UserController {
     @Autowired
     private UserService userService;
