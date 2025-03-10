@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity
+@Entity(name = "users")
 @Table(name = "users")
 @Data
 @AllArgsConstructor

@@ -7,6 +7,8 @@ import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserService {
     
@@ -30,13 +32,20 @@ public class UserService {
         return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail())).toList();
     }
 
-    public UserDTO updateUser(long id, UserDTO userDTO){
-        User user = userRepository.findById(id).get();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user = userRepository.save(user);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+    // public UserDTO updateUser(long id, UserDTO userDTO){
+    //     User user = userRepository.findById(id).get();
+    //     user.setName(userDTO.getName());
+    //     user.setEmail(userDTO.getEmail());
+    //     user = userRepository.save(user);
+    //     return new UserDTO(user.getId(), user.getName(), user.getEmail());
+    // }
+
+    @Transactional
+    public UserDTO updateUser(long id, UserDTO userDTO) {
+        userRepository.updateUser(id, userDTO.getName(), userDTO.getEmail());
+        return new UserDTO(id, userDTO.getName(), userDTO.getEmail());
     }
+
 
     public void deleteUser(Long id){ 
         User user = userRepository.findById(id).get();

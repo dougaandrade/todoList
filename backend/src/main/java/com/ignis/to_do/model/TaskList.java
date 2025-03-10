@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "task_list")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor  
@@ -28,6 +28,11 @@ public class TaskList {
     private Board board;
     @OneToMany(mappedBy = "list")
     private List<Task> tasks;
+
+    public TaskList(String name, Board board) {
+        this.name = name;
+        this.board = board;
+    }
 
     public Task addTask(Task task) {
         tasks.add(task); 
