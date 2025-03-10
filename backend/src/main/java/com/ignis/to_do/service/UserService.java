@@ -23,7 +23,7 @@ public class UserService {
 
     public UserDTO getUserDTO(long id){
         User user = userRepository.findById(id).get();
-            return new UserDTO(user.getId(), user.getName(), user.getEmail());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail());
     }
 
     public Iterable<UserDTO> getAllUsers(){
@@ -46,4 +46,8 @@ public class UserService {
     public boolean validateUser(String name, String email){
         return userRepository.existsByNameAndEmail(name, email);
     }  
+
+    public User getUser(Long id){
+        return userRepository.findById(id).get();
+    }
 }
