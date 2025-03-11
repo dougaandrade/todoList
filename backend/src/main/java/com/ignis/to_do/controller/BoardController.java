@@ -23,7 +23,7 @@ public class BoardController {
     public BoardDTO createBoard(
         @PathVariable String title,
         @PathVariable Long ownerId
-        ) {
+        ){
 
         return boardService.createBoard(title, ownerId);
     }
@@ -36,16 +36,21 @@ public class BoardController {
 
     @GetMapping("/allBoards")
     public Iterable<BoardDTO> getAllBoards() {
+
         return boardService.getAllBoards();
     }
 
     @DeleteMapping("/deleteBoard/{id}")
     public void deleteBoard(@PathVariable Long id) {
+
         boardService.deleteBoard(id);
     }
 
     @PutMapping("/updateBoard/{id}/{title}")
-    public BoardDTO updateBoard(@PathVariable Long id, @PathVariable String title) {
+    public BoardDTO updateBoard(
+        @PathVariable Long id,
+        @PathVariable String title) {
+            
         return boardService.updateBoard(id, title);
     }
 

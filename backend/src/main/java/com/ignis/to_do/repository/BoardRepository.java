@@ -10,7 +10,10 @@ import com.ignis.to_do.model.Board;
 public interface BoardRepository extends JpaRepository<Board, Long> {
     @Modifying
     @Query("UPDATE board b SET b.title = :title WHERE b.id = :id")
-    void updateTitle(@Param("id") Long id, @Param("title") String title);
+    void updateTitle(
+        @Param("id") Long id,
+        @Param("title") String title
+        );
 
     
 }

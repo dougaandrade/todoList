@@ -42,6 +42,4 @@ public class TaskList {
     public void removeTask(Task task) {
         tasks.remove(task);
     }
-    
-
 }

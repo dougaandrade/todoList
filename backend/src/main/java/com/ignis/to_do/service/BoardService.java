@@ -12,25 +12,32 @@ import jakarta.transaction.Transactional;
 
 @Service    
 public class BoardService {
+
     @Autowired
     private BoardRepository boardRepository;
     @Autowired
     private UserService userService;    
 
     public BoardDTO createBoard(String title, Long ownerId) {
+
         User user = userService.getUser(ownerId);   
         Board board = new Board(title, user);
         boardRepository.save(board);
-        return new BoardDTO(board.getId(), board.getTitle(), board.getOwner().getId());
+        return new BoardDTO(board.getId(), board.getTitle(),
+            board.getOwner().getId());
     }
 
     public BoardDTO getBoardDTO(Long id) {
+
         Board board = boardRepository.findById(id).get();
-        return new BoardDTO(board.getId(), board.getTitle(), board.getOwner().getId());
+        return new BoardDTO(board.getId(), board.getTitle(), 
+            board.getOwner().getId());
     }
 
     public Iterable<BoardDTO> getAllBoards() {
-        return boardRepository.findAll().stream().map(board -> new BoardDTO(board.getId(), board.getTitle(), board.getOwner().getId())).toList();
+        
+        return boardRepository.findAll().stream().map(board -> new BoardDTO(
+            board.getId(), board.getTitle(), board.getOwner().getId())).toList();
     }
 
     public void deleteBoard(Long id) {
@@ -40,7 +47,8 @@ public class BoardService {
     @Transactional
     public BoardDTO updateBoard(Long id, String title) {
         boardRepository.updateTitle(id, title);
-        return new BoardDTO(id, title, boardRepository.findById(id).get().getOwner().getId());
+        return new BoardDTO(id, title, 
+            boardRepository.findById(id).get().getOwner().getId());
     }
 
     

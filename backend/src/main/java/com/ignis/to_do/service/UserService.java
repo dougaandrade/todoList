@@ -29,17 +29,11 @@ public class UserService {
     }
 
     public Iterable<UserDTO> getAllUsers(){
-        return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail())).toList();
+        return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(),
+            user.getName(), user.getEmail())).toList();
     }
 
-    // public UserDTO updateUser(long id, UserDTO userDTO){
-    //     User user = userRepository.findById(id).get();
-    //     user.setName(userDTO.getName());
-    //     user.setEmail(userDTO.getEmail());
-    //     user = userRepository.save(user);
-    //     return new UserDTO(user.getId(), user.getName(), user.getEmail());
-    // }
-
+    
     @Transactional
     public UserDTO updateUser(long id, UserDTO userDTO) {
         userRepository.updateUser(id, userDTO.getName(), userDTO.getEmail());

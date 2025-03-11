@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Board{
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,18 +29,19 @@ public class Board{
     @OneToMany(mappedBy = "board")
     private List<TaskList> taskLists;
 
-
-
     public Board(String title, User owner) {
         this.title = title;
         this.owner = owner;
     }   
 
     public void addTaskList(TaskList taskList) {
+
         taskList.setBoard(this);
         this.taskLists.add(taskList);
     }
+    
     public void removeTaskList(TaskList taskList) {
+
         taskList.setBoard(null);
         this.taskLists.remove(taskList);
     }

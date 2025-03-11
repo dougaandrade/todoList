@@ -22,8 +22,13 @@ public class TaskListService {
         Board board = boardService.getBoard(boardId);
         TaskList taskList = new TaskList(title, board);
         taskListRepository.save(taskList);
-        return new TaskListDTO(taskList.getId(), taskList.getName(), taskList.getBoard().getId());
+        return new TaskListDTO(taskList.getId(), taskList.getName(), 
+            taskList.getBoard().getId());
     }
+
+    // imp createTaskList(Board board) {
+        
+    // }
 
     public void deleteTaskList(TaskList taskList) {        
         taskListRepository.delete(taskList);        
@@ -31,18 +36,29 @@ public class TaskListService {
 
     public TaskListDTO getTaskList(Long id) {
         TaskList taskList = taskListRepository.findById(id).get();
-        return new TaskListDTO(taskList.getId(), taskList.getName(), taskList.getBoard().getId());
+        return new TaskListDTO(taskList.getId(), taskList.getName(), 
+            taskList.getBoard().getId());
+    }
+
+    public Iterable<TaskListDTO> getAllTaskLists() {
+        return taskListRepository.findAll().stream().map(taskList -> new TaskListDTO(
+            taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
+    }
+
+    public TaskList getList(Long id) {
+        return taskListRepository.findById(id).get();        
     }
 
     public void deleteTaskList(Long id) {
         taskListRepository.deleteById(id);
     }
 
-    public TaskListDTO updateTaskList(Long id, String title) {
+    public TaskListDTO updateTaskListTitle(Long id, String title) {
         TaskList taskList = taskListRepository.findById(id).get();
         taskList.setName(title);
         taskListRepository.save(taskList);
-        return new TaskListDTO(taskList.getId(), taskList.getName(), taskList.getBoard().getId());
+        return new TaskListDTO(taskList.getId(), taskList.getName(), 
+        taskList.getBoard().getId());
     }
 
     @Transactional
