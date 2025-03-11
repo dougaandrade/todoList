@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ignis.to_do.model.Category;
 import com.ignis.to_do.service.CategoryService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/category")
+@Tag(name = "Category Controller", description = "Gerenciamento de categorias")
 public class CategoryController {
 
     @Autowired

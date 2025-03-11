@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ignis.to_do.dto.BoardDTO;
 import com.ignis.to_do.service.BoardService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/board")
+@Tag(name = "Board Controller", description = "Gerenciamento de Boards")
 public class BoardController {
 
     @Autowired
