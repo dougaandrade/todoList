@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ignis.to_do.dto.BoardDTO;
+import com.ignis.to_do.dto.TaskListDTO;
 import com.ignis.to_do.service.BoardService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +42,17 @@ public class BoardController {
     public Iterable<BoardDTO> getAllBoards() {
 
         return boardService.getAllBoards();
+    }
+
+    @GetMapping("myBoards/{id}")
+    public Iterable<BoardDTO> getMyBoards(@PathVariable long id) {
+        
+        return boardService.getMyBoards(id);
+    }
+
+    @GetMapping("myTasksByBoard/{id}")
+    public Iterable<TaskListDTO> myTasksListsByBoard(@PathVariable Long id){
+        return boardService.myTasksListsByBoard(id);
     }
 
     @DeleteMapping("/deleteBoard/{id}")

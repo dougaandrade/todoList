@@ -42,12 +42,11 @@ public class User{
         this.email = email;
     }
 
-    public Board createBoard(String title){
+    public List<Board> createBoard(Board board){
 
-        Board board = new Board();
-        board.setTitle(title);
-        board.setOwner(this);
-        return board;
+        boards.add(board);
+
+        return boards;
     }
 
     public void deleteBoard(Board board){

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ignis.to_do.dto.BoardDTO;
+import com.ignis.to_do.dto.TaskListDTO;
 import com.ignis.to_do.model.Board;
 import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.BoardRepository;
@@ -38,6 +39,19 @@ public class BoardService {
         
         return boardRepository.findAll().stream().map(board -> new BoardDTO(
             board.getId(), board.getTitle(), board.getOwner().getId())).toList();
+    }
+
+    public Iterable<BoardDTO> getMyBoards(Long ownerId) {
+        User user = userService.getUser(ownerId);  
+        return user.getBoards().stream().map(board -> new BoardDTO(board.getId(),
+             board.getTitle(), board.getOwner().getId())).toList();
+    }
+
+    public Iterable<TaskListDTO> myTasksListsByBoard(Long id){
+
+        Board board = boardRepository.findById(id).get();
+        return board.getTaskLists().stream().map(taskList -> new TaskListDTO(
+            taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
     }
 
     public void deleteBoard(Long id) {
