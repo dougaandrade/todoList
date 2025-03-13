@@ -54,6 +54,18 @@ public class BoardService {
             taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
     }
 
+    public boolean isFavorite(Long boardId) {
+
+        Boolean boardIsFavorite = boardRepository.findById(boardId).get().isFavorite();
+        return boardIsFavorite;
+    }
+
+    @Transactional
+    public void toggleFavorite(Long boardId) {
+
+        Boolean board = boardRepository.findById(boardId).get().isFavorite();
+        boardRepository.updateFavorite(boardId, !board);
+    }
     public void deleteBoard(Long id) {
         boardRepository.deleteById(id);
     }
@@ -61,8 +73,7 @@ public class BoardService {
     @Transactional
     public BoardDTO updateBoard(Long id, String title) {
         boardRepository.updateTitle(id, title);
-        return new BoardDTO(id, title, 
-            boardRepository.findById(id).get().getOwner().getId());
+        return new BoardDTO(id, title, boardRepository.findById(id).get().getOwner().getId());
     }
 
     

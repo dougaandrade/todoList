@@ -2,7 +2,6 @@
 package com.ignis.to_do.model;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,10 +23,12 @@ public class Board{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @JoinColumn(name = "favorite")
+    private boolean isFavorite;
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "board")
     private List<TaskList> taskLists;
 
     public Board(String title, User owner) {

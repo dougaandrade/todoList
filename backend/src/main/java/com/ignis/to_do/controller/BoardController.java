@@ -50,6 +50,17 @@ public class BoardController {
         return boardService.getMyBoards(id);
     }
 
+    @GetMapping("/isFavorite/{id}")
+    public Boolean isFavorite(@PathVariable Long id) {  
+
+        return boardService.isFavorite(id);
+    }
+
+    @PutMapping("/toggleFavorite/{id}")
+    public void toggleFavorite(@PathVariable Long id) {
+        boardService.toggleFavorite(id);
+    }
+
     @GetMapping("myTasksByBoard/{id}")
     public Iterable<TaskListDTO> myTasksListsByBoard(@PathVariable Long id){
         return boardService.myTasksListsByBoard(id);
