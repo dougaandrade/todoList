@@ -186,6 +186,16 @@ INSERT INTO task_list (name, board_id) VALUES
 ('Projetos Criativos', 9),
 ('Reuniões de Consultoria', 10);
 
+INSERT INTO category (name) VALUES
+('Trabalho'),
+('Estudos'),
+('Saúde'),
+('Financeiro'),
+('Pessoal'),
+('Projetos'),
+('Tecnologia'),
+('Lazer'),
+('Família');
 
 INSERT INTO task (title, description, status, list_id, category_id, due_date) VALUES
 ('Finalizar relatório', 'Concluir o relatório de progresso para o cliente.', 'pendente', 1, 1, '2025-03-20 15:30:00'),
@@ -211,13 +221,3 @@ INSERT INTO task (title, description, status, list_id, category_id, due_date) VA
 ('Estudar para a prova de matemática', 'Revisar teoria e resolver exercícios de álgebra.', 'pendente', 1, 2, '2025-03-20 10:30:00'),
 ('Assistir webinar sobre IA', 'Participar do webinar sobre Inteligência Artificial.', 'pendente', 2, 7, '2025-03-22 14:00:00');
 
-INSERT INTO category (name) VALUES
-('Trabalho'),
-('Estudos'),
-('Saúde'),
-('Financeiro'),
-('Pessoal'),
-('Projetos'),
-('Tecnologia'),
-('Lazer'),
-('Família');
