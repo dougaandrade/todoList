@@ -24,7 +24,7 @@ public class Board{
     private Long id;
     private String title;
     @JoinColumn(name = "favorite")
-    private boolean isFavorite;
+    private boolean favorite;
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;

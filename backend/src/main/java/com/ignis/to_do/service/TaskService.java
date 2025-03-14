@@ -17,14 +17,17 @@ public class TaskService {
     @Autowired
     private TaskListService taskListService;
 
-    public TaskDTO createTask(String title, Long taskListId) {
-        TaskList taskList = taskListService.getList(taskListId);
-        Task task = new Task(title, taskList);
-        taskRepository.save(task);
-        return new TaskDTO(task.getId(), title, task.getStatus(), taskListId);
-    }
-    public Task createTask(Task task) {        
-        return taskRepository.save(task);
+    // public TaskDTO createTask(String title, Long taskListId) {
+    //     TaskList taskList = taskListService.getList(taskListId);
+    //     Task task = new Task(title, taskList);
+    //     taskRepository.save(task);
+    //     return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), taskList.getId());
+    // }
+    public TaskDTO createTask(TaskDTO taskDTO) {  
+        TaskList taskList = taskListService.getList(taskDTO.getListId());        
+        Task task = new Task(taskDTO.getTitle(), taskList,taskDTO.getStatus());      
+        taskRepository.save(task);        
+        return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), taskList.getId());
     }
 
     public TaskDTO getTaskById(Long taskId) {  

@@ -16,10 +16,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         );
 
     @Modifying
-    @Query("UPDATE board b SET b.isFavorite = :isFavorite WHERE b.id = :id")
+    @Query("UPDATE board b SET b.favorite = :favorite WHERE b.id = :id")
     void updateFavorite(
         @Param("id") Long id,
-        @Param("isFavorite") boolean isFavorite
+        @Param("favorite") boolean favorite
         );
 
     

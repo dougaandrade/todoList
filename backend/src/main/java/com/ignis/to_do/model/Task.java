@@ -4,13 +4,12 @@ import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,9 +25,9 @@ public class Task {
     private Long id;            
     private String title;
     private String description;
-    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private TaskStatus status;
+    @Pattern(regexp = "PENDING|IN_PROGRESS|COMPLETED|ARCHIVED", message = "Status deve ser PENDING, IN_PROGRESS, COMPLETED ou ARCHIVED")
+    private String status;
     @ManyToOne
     @JoinColumn(name = "list_id")
     private TaskList list;
@@ -37,23 +36,23 @@ public class Task {
     private Category category;
     private Date dueDate;
 
-    public Task(String title, TaskList list) {
+    public Task(String title, TaskList list, String status) {
         this.title = title;
         this.list = list;
-        this.status = TaskStatus.PENDING;
+        this.status = status;
     }
 
     public Task createTask(Task task) {  
-        Task newTask = new Task();
-        newTask.setTitle(task.getTitle());
-        newTask.setDescription(task.getDescription());
-        newTask.setStatus(task.getStatus());
-        newTask.setList(task.getList());        
-        newTask.setCategory(task.getCategory());
-        newTask.setDueDate(task.getDueDate());
-        return newTask;      
+        task.setTitle(task.getTitle());
+        task.setDescription(task.getDescription());
+        task.setStatus(task.getStatus());
+        task.setList(task.getList());        
+        task.setCategory(task.getCategory());
+        task.setDueDate(task.getDueDate());
+        return task;      
         
     } 
+    
 
     public void deleteTask(Task task) {      
 
