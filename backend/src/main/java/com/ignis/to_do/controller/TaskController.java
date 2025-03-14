@@ -32,10 +32,10 @@ public class TaskController {
         return taskService.createTask(titulo, taskListId);
     }
 
-    @GetMapping("/getTask/{id}")
-    public TaskDTO getTask(@PathVariable Long id) {
+    @GetMapping("/getTask/{taskId}")
+    public TaskDTO getTaskById(@PathVariable Long taskId) {
 
-        return taskService.getTask(id);
+        return taskService.getTaskById(taskId);
     }   
 
     @GetMapping("/getAllTasks")
@@ -43,18 +43,18 @@ public class TaskController {
 
         return taskService.getAllTasks();
     }   
-
-    @DeleteMapping("/deleteTask/{id}")
-    public void deleteTask(@PathVariable Long id) {
-        
-        taskService.deleteTask(id); 
-    }
-
-    @PutMapping("/updateTask/{id}/{title}")
+    
+    @PutMapping("/updateTask/{taskId}/{title}")
     public TaskDTO updateTaskTitle(
-        @PathVariable Long id,
+        @PathVariable Long taskId,
         @PathVariable String title) {
             
-        return taskService.updateTaskTitle(id, title);
+        return taskService.updateTaskTitle(taskId, title);
+    }
+
+    @DeleteMapping("/deleteTask/{taskId}")
+    public void deleteTaskById(@PathVariable Long taskId) {
+        
+        taskService.deleteTaskById(taskId); 
     }
 }   

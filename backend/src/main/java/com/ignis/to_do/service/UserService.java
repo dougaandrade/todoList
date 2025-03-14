@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
     
-    // VERIFICAR SE PRECISER private final
+    // VERIFICAR SE PRECISA SER private final
     @Autowired
     private UserRepository userRepository;
 
@@ -23,8 +23,8 @@ public class UserService {
         return new UserDTO(user.getId(), user.getName(), user.getEmail());
     }
 
-    public UserDTO getUserDTO(long id){
-        User user = userRepository.findById(id).get();
+    public UserDTO getUserDTOById(Long userId){
+        User user = userRepository.findById(userId).get();
         return new UserDTO(user.getId(), user.getName(), user.getEmail());
     }
 
@@ -35,14 +35,14 @@ public class UserService {
 
     
     @Transactional
-    public UserDTO updateUser(long id, UserDTO userDTO) {
-        userRepository.updateUser(id, userDTO.getName(), userDTO.getEmail());
-        return new UserDTO(id, userDTO.getName(), userDTO.getEmail());
+    public UserDTO updateUserById(long userId, UserDTO userDTO) {
+        userRepository.updateUser(userId, userDTO.getName(), userDTO.getEmail());
+        return new UserDTO(userId, userDTO.getName(), userDTO.getEmail());
     }
 
 
-    public void deleteUser(Long id){ 
-        User user = userRepository.findById(id).get();
+    public void deleteUserById(Long userId){ 
+        User user = userRepository.findById(userId).get();
         userRepository.delete(user);
     }
 

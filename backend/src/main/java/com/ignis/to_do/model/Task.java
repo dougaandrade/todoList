@@ -2,7 +2,10 @@ package com.ignis.to_do.model;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,6 +26,8 @@ public class Task {
     private Long id;            
     private String title;
     private String description;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private TaskStatus status;
     @ManyToOne
     @JoinColumn(name = "list_id")
@@ -35,6 +40,7 @@ public class Task {
     public Task(String title, TaskList list) {
         this.title = title;
         this.list = list;
+        this.status = TaskStatus.PENDING;
     }
 
     public Task createTask(Task task) {  

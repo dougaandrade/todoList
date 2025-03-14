@@ -21,29 +21,32 @@ public class TaskService {
         TaskList taskList = taskListService.getList(taskListId);
         Task task = new Task(title, taskList);
         taskRepository.save(task);
-        return new TaskDTO(task.getId(), title, taskListId);
+        return new TaskDTO(task.getId(), title, task.getStatus(), taskListId);
     }
     public Task createTask(Task task) {        
         return taskRepository.save(task);
     }
 
-    public TaskDTO getTask(Long id) {  
-        Task task = taskRepository.findById(id).get();      
-        return new TaskDTO(task.getId(), task.getTitle(), task.getList().getId()); 
+    public TaskDTO getTaskById(Long taskId) {  
+        Task task = taskRepository.findById(taskId).get();      
+        return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()); 
     }
 
     public Iterable<TaskDTO> getAllTasks() {
+
+
         return taskRepository.findAll().stream().map(task -> new TaskDTO(task.getId(),
-            task.getTitle(), task.getList().getId())).toList();
+            task.getTitle(), task.getStatus(), task.getList().getId())).toList();
     }
     
-    public void deleteTask(Long id) {        
-        taskRepository.deleteById(id);     
+    public void deleteTaskById(Long taskId) {        
+        taskRepository.deleteById(taskId);     
     }
     @Transactional
-    public TaskDTO updateTaskTitle(Long id, String title) {
-        taskRepository.updateTaskTitle(id, title);        
-        return new TaskDTO(id, title, taskRepository.findById(id).get().getList().getId());
+    public TaskDTO updateTaskTitle(Long taskListId, String title) {
+        taskRepository.updateTaskTitle(taskListId, title);        
+        return new TaskDTO(taskListId, title, taskRepository.findById(taskListId).get().getStatus(),
+         taskRepository.findById(taskListId).get().getList().getId());
     }
     
 }

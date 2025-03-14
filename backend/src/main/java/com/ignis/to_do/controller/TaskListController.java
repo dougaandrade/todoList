@@ -30,10 +30,10 @@ public class TaskListController {
         return taskListService.createTaskList(title, boardId);
     }
 
-    @GetMapping("/{id}")
-    public TaskListDTO getTaskList(@PathVariable Long id) {
+    @GetMapping("/{taskListId}")
+    public TaskListDTO getTaskListById(@PathVariable Long taskListId) {
 
-        return taskListService.getTaskList(id);
+        return taskListService.getTaskListById(taskListId);
     }
 
     @GetMapping("/allTaskLists")
@@ -41,26 +41,26 @@ public class TaskListController {
 
         return taskListService.getAllTaskLists();
     }
-
-    @DeleteMapping("/deleteTaskList/{id}")
-    public void deleteTaskList(@PathVariable Long id) {
-
-        taskListService.deleteTaskList(id);
-    }
-
-    @PutMapping("/updateTaskList/{id}/{title}")
+    
+    @PutMapping("/updateTaskList/{taskListId}/{title}")     
     public TaskListDTO updateTaskListTitle(
-        @PathVariable Long id, 
+        @PathVariable Long taskListId, 
         @PathVariable String title){
 
-        return taskListService.updateTaskListTitle(id, title);
+        return taskListService.updateTaskListTitle(taskListId, title);
     }
 
-    @PutMapping("updateBoardId/{id}/{boardId}")
+    @PutMapping("updateBoardId/{taskListId}/{boardId}")
     public TaskListDTO updateBoardId(
-        @PathVariable Long id,
+        @PathVariable Long taskListId,
         @PathVariable Long boardId) {
         
-        return taskListService.updateBoardId(id, boardId);
+        return taskListService.updateBoardId(taskListId, boardId);
+    }
+
+    @DeleteMapping("/deleteTaskList/{taskListId}")
+    public void deleteTaskListById(@PathVariable Long taskListId) {
+
+        taskListService.deleteTaskListById(taskListId);
     }
 }

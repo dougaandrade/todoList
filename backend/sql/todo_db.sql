@@ -1,3 +1,5 @@
+CREATE TYPE task_status AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED');
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -29,7 +31,7 @@ CREATE TABLE task (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    status VARCHAR(50) NOT NULL,
+    status task_status DEFAULT 'PENDING',
     list_id INT,
     category_id INT,
     due_date TIMESTAMP,
@@ -46,5 +48,3 @@ CREATE TABLE user_favorite_board (
     FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
 );
 
-ALTER TABLE task
-    ALTER COLUMN status DROP NOT NULL;

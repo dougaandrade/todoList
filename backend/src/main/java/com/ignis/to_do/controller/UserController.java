@@ -33,33 +33,6 @@ public class UserController {
         return userService.createUser(userDTO);
     }
 
-    @GetMapping("/{id}")
-    public UserDTO getUserDTO(@PathVariable long id) {
-
-        return userService.getUserDTO(id);
-    }
-
-    @GetMapping("/all")
-    public Iterable<UserDTO> getAllUsers() {
-
-        return userService.getAllUsers();
-    }
-
-    @PutMapping("/{id}")
-    public UserDTO updateUser(
-        @PathVariable long id,
-        @RequestBody UserDTO userDTO) {
-
-        return userService.updateUser(id, userDTO);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id) {
-        
-        userService.deleteUser(id);
-    }
-
-    //TESTANDO LOGIN
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
         
@@ -71,5 +44,31 @@ public class UserController {
         } 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
             "Usuário não encontrado");
+    }
+
+    @GetMapping("/{userId}")
+    public UserDTO getUserById(@PathVariable Long userId) {
+
+        return userService.getUserDTOById(userId);
+    }
+
+    @GetMapping("/all")
+    public Iterable<UserDTO> getAllUsers() {
+
+        return userService.getAllUsers();
+    }
+
+    @PutMapping("/{userId}")
+    public UserDTO updateUserById(
+        @PathVariable long userId,
+        @RequestBody UserDTO userDTO) {
+
+        return userService.updateUserById(userId, userDTO);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUserById(@PathVariable long userId) {
+        
+        userService.deleteUserById(userId);
     }
 }

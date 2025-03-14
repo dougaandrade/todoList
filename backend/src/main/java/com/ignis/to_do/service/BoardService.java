@@ -28,9 +28,9 @@ public class BoardService {
             board.getOwner().getId());
     }
 
-    public BoardDTO getBoardDTO(Long id) {
+    public BoardDTO getBoardById(Long boardId) {
 
-        Board board = boardRepository.findById(id).get();
+        Board board = boardRepository.findById(boardId).get();
         return new BoardDTO(board.getId(), board.getTitle(), 
             board.getOwner().getId());
     }
@@ -41,15 +41,16 @@ public class BoardService {
             board.getId(), board.getTitle(), board.getOwner().getId())).toList();
     }
 
-    public Iterable<BoardDTO> getMyBoards(Long ownerId) {
+    public Iterable<BoardDTO> getMyBoardsByOwnerId(Long ownerId) {
+
         User user = userService.getUser(ownerId);  
         return user.getBoards().stream().map(board -> new BoardDTO(board.getId(),
              board.getTitle(), board.getOwner().getId())).toList();
     }
 
-    public Iterable<TaskListDTO> myTasksListsByBoard(Long id){
+    public Iterable<TaskListDTO> myTasksListsByBoardId(Long boardId){
 
-        Board board = boardRepository.findById(id).get();
+        Board board = boardRepository.findById(boardId).get();
         return board.getTaskLists().stream().map(taskList -> new TaskListDTO(
             taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
     }
@@ -66,14 +67,14 @@ public class BoardService {
         Boolean board = boardRepository.findById(boardId).get().isFavorite();
         boardRepository.updateFavorite(boardId, !board);
     }
-    public void deleteBoard(Long id) {
-        boardRepository.deleteById(id);
+    public void deleteBoardById(Long boardId) {
+        boardRepository.deleteById(boardId);
     }
 
     @Transactional
-    public BoardDTO updateBoard(Long id, String title) {
-        boardRepository.updateTitle(id, title);
-        return new BoardDTO(id, title, boardRepository.findById(id).get().getOwner().getId());
+    public BoardDTO updateBoardTitle(Long boardId, String title) {
+        boardRepository.updateTitle(boardId, title);
+        return new BoardDTO(boardId, title, boardRepository.findById(boardId).get().getOwner().getId());
     }
 
     
