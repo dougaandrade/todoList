@@ -2,7 +2,8 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE board (
@@ -37,13 +38,3 @@ CREATE TABLE task (
     FOREIGN KEY (list_id) REFERENCES task_list(id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL
 );
-
-CREATE TABLE user_favorite_board (
-    id SERIAL ,
-    user_id INT,
-    board_id INT,
-    PRIMARY KEY (user_id, board_id),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (board_id) REFERENCES board(id) ON DELETE CASCADE
-);
-
