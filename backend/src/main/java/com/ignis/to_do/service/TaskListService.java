@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TaskListService {
+
     @Autowired
     private TaskListRepository taskListRepository;
     @Autowired
@@ -26,16 +27,10 @@ public class TaskListService {
             taskList.getBoard().getId());
     }
 
-    // imp createTaskList(Board board) {
-        
-    // }
 
-    public void deleteTaskList(TaskList taskList) {        
-        taskListRepository.delete(taskList);        
-    }
 
-    public TaskListDTO getTaskList(Long id) {
-        TaskList taskList = taskListRepository.findById(id).get();
+    public TaskListDTO getTaskListById(Long taskLitsId) {
+        TaskList taskList = taskListRepository.findById(taskLitsId).get();
         return new TaskListDTO(taskList.getId(), taskList.getName(), 
             taskList.getBoard().getId());
     }
@@ -49,8 +44,12 @@ public class TaskListService {
         return taskListRepository.findById(id).get();        
     }
 
-    public void deleteTaskList(Long id) {
-        taskListRepository.deleteById(id);
+    public void deleteTaskList(TaskList taskList) {        
+        taskListRepository.delete(taskList);        
+    }
+
+    public void deleteTaskListById(Long taskListId) {
+        taskListRepository.deleteById(taskListId);
     }
 
     public TaskListDTO updateTaskListTitle(Long id, String title) {

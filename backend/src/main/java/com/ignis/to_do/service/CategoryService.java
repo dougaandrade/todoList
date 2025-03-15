@@ -22,16 +22,17 @@ public class CategoryService {
         return categoryRepository.findAll();
     }   
     
-    public Category getCategory(Long id) {
-        return categoryRepository.findById(id).get();
+    public Category getCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId).get();
     }
 
-    public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
+    public void deleteCategoryById(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
     }
+    
     @Transactional
-    public Category updateCategory(Long id, String name) {
-        categoryRepository.updateCategoryName(id, name);
-        return categoryRepository.findById(id).get();
+    public Category updateCategoryName(Long categoryId, String newCategotyName) {
+        categoryRepository.updateCategoryName(categoryId, newCategotyName);
+        return categoryRepository.findById(categoryId).get();
     }
 }

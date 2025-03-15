@@ -29,14 +29,27 @@ public class UserController {
 
     @PostMapping
     public UserDTO createUser(@RequestBody UserDTO userDTO) {
-
+        
         return userService.createUser(userDTO);
     }
 
-    @GetMapping("/{id}")
-    public UserDTO getUserDTO(@PathVariable long id) {
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
+        
+        boolean isValid = userService.validateUser(
+            userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
+        
+        if (isValid) {
+            return ResponseEntity.ok("Logado com sucesso");
+        } 
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            "Usuário não encontrado");
+    }
 
-        return userService.getUserDTO(id);
+    @GetMapping("/{userId}")
+    public UserDTO getUserById(@PathVariable Long userId) {
+        
+        return userService.getUserDTOById(userId);
     }
 
     @GetMapping("/all")
@@ -45,31 +58,17 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PutMapping("/{id}")
-    public UserDTO updateUser(
-        @PathVariable long id,
+    @PutMapping("/{userId}")
+    public UserDTO updateUserById(
+        @PathVariable long userId,
         @RequestBody UserDTO userDTO) {
 
-        return userService.updateUser(id, userDTO);
+        return userService.updateUserById(userId, userDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id) {
+    @DeleteMapping("/{userId}")
+    public void deleteUserById(@PathVariable long userId) {
         
-        userService.deleteUser(id);
-    }
-
-    //TESTANDO LOGIN
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
-        
-        boolean isValid = userService.validateUser(
-            userDTO.getName(), userDTO.getEmail());
-        
-        if (isValid) {
-            return ResponseEntity.ok("Logado com sucesso");
-        } 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-            "Usuário não encontrado");
+        userService.deleteUserById(userId);
     }
 }
