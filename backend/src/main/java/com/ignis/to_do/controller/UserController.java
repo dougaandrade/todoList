@@ -29,7 +29,7 @@ public class UserController {
 
     @PostMapping
     public UserDTO createUser(@RequestBody UserDTO userDTO) {
-
+        
         return userService.createUser(userDTO);
     }
 
@@ -37,7 +37,7 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
         
         boolean isValid = userService.validateUser(
-            userDTO.getName(), userDTO.getEmail());
+            userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         
         if (isValid) {
             return ResponseEntity.ok("Logado com sucesso");
@@ -48,7 +48,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserDTO getUserById(@PathVariable Long userId) {
-
+        
         return userService.getUserDTOById(userId);
     }
 
