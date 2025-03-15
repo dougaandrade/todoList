@@ -29,26 +29,26 @@ public class CategoryController {
         return category;
     }
 
-    @GetMapping("/{id}")
-    public Category getCategory(@PathVariable Long id) {        
-        return categoryService.getCategory(id);
+    @GetMapping("/{categoryId}")
+    public Category getCategoryById(@PathVariable Long categoryId) {        
+        return categoryService.getCategoryById(categoryId);
     }
 
     @GetMapping("/getAllCategories")
     public Iterable<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
-
-    @DeleteMapping("/deleteCategory/{id}")
-    public void deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
+    
+    @PutMapping("/updateCategoryName/{categoryId}/{name}")
+    public Category updateCategoryName(
+        @PathVariable Long categoryId,
+        @PathVariable String newCategoryName) {
+            
+        return categoryService.updateCategoryName(categoryId, newCategoryName);
     }
 
-    @PutMapping("/updateCategoryName/{id}/{name}")
-    public Category updateCategory(
-        @PathVariable Long id,
-        @PathVariable String name) {
-            
-        return categoryService.updateCategory(id, name);
+    @DeleteMapping("/deleteCategory/{categoryId}")
+    public void deleteCategoryById(@PathVariable Long categoryId) {
+        categoryService.deleteCategoryById(categoryId);
     }
 }

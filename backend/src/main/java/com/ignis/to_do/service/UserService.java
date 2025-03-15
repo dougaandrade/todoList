@@ -12,41 +12,44 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
     
-    // VERIFICAR SE PRECISER private final
+    // VERIFICAR SE PRECISA SER private final
     @Autowired
     private UserRepository userRepository;
 
 
     public UserDTO createUser(UserDTO userDTO){
-        User user = new User(userDTO.getName(), userDTO.getEmail());
+        
+        User user = new User(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         user = userRepository.save(user);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+
     }
 
-    public UserDTO getUserDTO(long id){
-        User user = userRepository.findById(id).get();
-        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+    public UserDTO getUserDTOById(Long userId){
+        User user = userRepository.findById(userId).get();
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
     }
 
     public Iterable<UserDTO> getAllUsers(){
         return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(),
-            user.getName(), user.getEmail())).toList();
+            user.getName(), user.getEmail(),  user.getPassword())).toList();
     }
 
     
     @Transactional
-    public UserDTO updateUser(long id, UserDTO userDTO) {
-        userRepository.updateUser(id, userDTO.getName(), userDTO.getEmail());
-        return new UserDTO(id, userDTO.getName(), userDTO.getEmail());
+    public UserDTO updateUserById(long userId, UserDTO userDTO) {
+        userRepository.updateUser(userId, userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
+        return new UserDTO(userId, userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
     }
 
 
-    public void deleteUser(Long id){ 
-        User user = userRepository.findById(id).get();
+
+    public void deleteUserById(Long userId){ 
+        User user = userRepository.findById(userId).get();
         userRepository.delete(user);
     }
 
-    public boolean validateUser(String name, String email){
+    public boolean validateUser(String name, String email, String password) {
         return userRepository.existsByNameAndEmail(name, email);
     }  
 
