@@ -18,27 +18,30 @@ public class UserService {
 
 
     public UserDTO createUser(UserDTO userDTO){
-        User user = new User(userDTO.getName(), userDTO.getEmail());
+        
+        User user = new User(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         user = userRepository.save(user);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+
     }
 
     public UserDTO getUserDTOById(Long userId){
         User user = userRepository.findById(userId).get();
-        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
     }
 
     public Iterable<UserDTO> getAllUsers(){
         return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(),
-            user.getName(), user.getEmail())).toList();
+            user.getName(), user.getEmail(),  user.getPassword())).toList();
     }
 
     
     @Transactional
     public UserDTO updateUserById(long userId, UserDTO userDTO) {
-        userRepository.updateUser(userId, userDTO.getName(), userDTO.getEmail());
-        return new UserDTO(userId, userDTO.getName(), userDTO.getEmail());
+        userRepository.updateUser(userId, userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
+        return new UserDTO(userId, userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
     }
+
 
 
     public void deleteUserById(Long userId){ 
@@ -46,7 +49,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public boolean validateUser(String name, String email){
+    public boolean validateUser(String name, String email, String password) {
         return userRepository.existsByNameAndEmail(name, email);
     }  
 
