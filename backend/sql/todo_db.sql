@@ -1,4 +1,3 @@
-CREATE TYPE task_status AS ENUM ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED');
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -31,7 +30,7 @@ CREATE TABLE task (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    status task_status DEFAULT 'PENDING',
+    status VARCHAR(20),
     list_id INT,
     category_id INT,
     due_date TIMESTAMP,
