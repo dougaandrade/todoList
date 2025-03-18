@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ignis.to_do.Validator.StatusValidator;
 import com.ignis.to_do.dto.TaskDTO;
+import com.ignis.to_do.exception.TasksException.TaskNotFoundException;
 import com.ignis.to_do.model.Task;
 import com.ignis.to_do.model.TaskList;
 import com.ignis.to_do.repository.TaskRepository;
@@ -37,7 +38,8 @@ public class TaskService implements TaskReminder {
     }
 
     public TaskDTO getTaskById(Long taskId) {  
-        Task task = taskRepository.findById(taskId).get();      
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(taskId));    
         return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()); 
     }
 
@@ -69,9 +71,10 @@ public class TaskService implements TaskReminder {
         if (taskDueDate.isBefore(today)) {
             sendTaskReminder();
             return "Lembrete de tarefa enviado.";
-        } else {
-            return "A tarefa ainda não está atrasada.";
-        }   
+        } 
+        
+        return "A tarefa ainda não está atrasada.";
+ 
     }
 
     @Override
