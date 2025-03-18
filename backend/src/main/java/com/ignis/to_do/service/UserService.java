@@ -50,7 +50,7 @@ public class UserService {
     }
 
     public boolean validateUser(String name, String email, String password) {
-        return userRepository.existsByNameAndEmail(name, email);
+        return userRepository.existsByNameAndEmailAndPassword(name, email, password);
     }  
 
     public User getUser(Long id){
