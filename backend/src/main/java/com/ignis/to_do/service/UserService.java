@@ -49,6 +49,11 @@ public class UserService {
         userRepository.delete(user);
     }
 
+    @Transactional
+    public void updatePasswordById(UserDTO userDTO) {
+        userRepository.updatePasswordById(userDTO.getId(), userDTO.getPassword());
+    }
+
     public boolean validateUser(String name, String email, String password) {
         return userRepository.existsByNameAndEmailAndPassword(name, email, password);
     }  

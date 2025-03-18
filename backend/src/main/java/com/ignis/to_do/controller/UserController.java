@@ -66,6 +66,13 @@ public class UserController {
         return userService.updateUserById(userId, userDTO);
     }
 
+    @PutMapping("/updatePassword")
+    public void updatePasswordById(
+        @RequestBody UserDTO userDTO) {
+        
+        userService.updatePasswordById(userDTO);
+    }
+
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable long userId) {
         
