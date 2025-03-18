@@ -58,7 +58,7 @@ public class TaskController {
     }
 
     @GetMapping("/checkOverdueTasks/{taskId}")
-    public void checkOverdueTasks(@PathVariable Long taskId) {
-        taskService.checkOverdueTasks(taskId); 
+    public String checkOverdueTasks(@PathVariable Long taskId) {
+        return taskService.checkOverdueTasks(taskId); 
     }
 }   

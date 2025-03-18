@@ -1,6 +1,7 @@
 package com.ignis.to_do.service;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,18 +59,22 @@ public class TaskService implements TaskReminder {
     }
     
     @Override
-    public void checkOverdueTasks(Long taskId) {
+    public String checkOverdueTasks(Long taskId) {
         
-        Task task = taskRepository.findById(taskId).get();   
-        Date dueDate = task.getDueDate();
 
-        if (dueDate.before(new Date())) {            
-            sendTaskReminder();            
-        }
+        Task task = taskRepository.findById(taskId).get();
+        LocalDate today = LocalDate.now();
+        LocalDate taskDueDate = task.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        System.out.println("Verificar tarefas atrasadas");        
+        if (taskDueDate.isBefore(today)) {
+            sendTaskReminder();
+            return "Lembrete de tarefa enviado.";
+        } else {
+            return "A tarefa ainda não está atrasada.";
+        }   
     }
 
+    @Override
     public void sendTaskReminder() {        
     }
 }
