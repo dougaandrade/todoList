@@ -12,7 +12,7 @@ public class ToDoApplication {
         // Carrega variáveis do arquivo .env
         // Dotenv dotenv = Dotenv.load();
         Dotenv dotenv = Dotenv.configure()
-        .directory(System.getProperty("user.dir")) 
+        .directory(System.getProperty("user.dir")) // Define o diretório raiz
         .load();
         System.setProperty("spring.datasource.url", dotenv.get("DB_URL"));
         System.setProperty("spring.datasource.username", dotenv.get("DB_USERNAME"));
