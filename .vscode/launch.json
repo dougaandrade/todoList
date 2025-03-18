@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ToDoApplication<to-do>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.ignis.to_do.ToDoApplication",
+            "projectName": "to-do",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
