@@ -11,7 +11,7 @@ import com.ignis.to_do.exception.TasksException.TaskNotFoundException;
 import com.ignis.to_do.model.Task;
 import com.ignis.to_do.model.TaskList;
 import com.ignis.to_do.repository.TaskRepository;
-import com.ignis.to_do.validator.StatusValidator;
+import com.ignis.to_do.Validator.StatusValidator;
 
 import jakarta.transaction.Transactional;
 
