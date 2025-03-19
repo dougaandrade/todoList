@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.service.UserService;
 
@@ -19,18 +18,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/users")
-// @AllArgsConstructor Analisar a necesseidade para evitar o @Autowired
-// @NoArgsConstructor
 @Tag(name = "User Controller", description = "Gerenciamento de Usuários")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    public UserDTO createUser(@RequestBody UserDTO userDTO) {
+    @PostMapping("/createUser")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         
-        return userService.createUser(userDTO);
+        return ResponseEntity.ok(userService.createUser(userDTO));
     }
 
     @PostMapping("/login")
@@ -47,23 +44,21 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDTO getUserById(@PathVariable Long userId) {
-        
-        return userService.getUserDTOById(userId);
-    }
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getUserDTOById(userId));
 
+    }
     @GetMapping("/all")
     public Iterable<UserDTO> getAllUsers() {
 
         return userService.getAllUsers();
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/updateUser")
     public UserDTO updateUserById(
-        @PathVariable long userId,
         @RequestBody UserDTO userDTO) {
 
-        return userService.updateUserById(userId, userDTO);
+        return userService.updateUserById(userDTO);
     }
 
     @PutMapping("/updatePassword")

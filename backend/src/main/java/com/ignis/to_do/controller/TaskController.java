@@ -43,12 +43,11 @@ public class TaskController {
         return taskService.getAllTasks();
     }   
     
-    @PutMapping("/updateTask/{taskId}/{title}")
+    @PutMapping("/updateTaskTitle")
     public TaskDTO updateTaskTitle(
-        @PathVariable Long taskId,
-        @PathVariable String title) {
+        @RequestBody TaskDTO taskDTO) {
             
-        return taskService.updateTaskTitle(taskId, title);
+        return taskService.updateTaskTitle(taskDTO);
     }
 
     @DeleteMapping("/deleteTask/{taskId}")

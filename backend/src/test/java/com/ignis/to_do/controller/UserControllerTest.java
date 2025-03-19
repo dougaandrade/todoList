@@ -38,7 +38,7 @@ class UserControllerTest {
 
         when(userService.createUser(any(UserDTO.class))).thenReturn(userDTO);
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post("/users/createUser")
                         .contentType("application/json")
                         .content("{\"name\":\"João\",\"email\":\"joao@email.com\",\"password\":\"senha123\"}"))
                 .andExpect(status().isOk())

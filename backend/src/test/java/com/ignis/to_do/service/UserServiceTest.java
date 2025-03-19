@@ -82,7 +82,7 @@ class UserServiceTest {
             eq(1L), eq("Novo Nome"), eq("novo@email.com"), eq("654321")
         );
 
-        UserDTO updatedUser = userService.updateUserById(1L, new UserDTO(1L, "Novo Nome", "novo@email.com", "654321"));
+        UserDTO updatedUser = userService.updateUserById(new UserDTO(1L, "Novo Nome", "novo@email.com", "654321"));
 
         assertNotNull(updatedUser);
         assertEquals("Novo Nome", updatedUser.getName());
@@ -103,12 +103,12 @@ class UserServiceTest {
     @Test
     void testValidateUser() {
 
-        when(userRepository.existsByNameAndEmail("Vinicius Dias", "vinicius@email.com")).thenReturn(true);
+        when(userRepository.existsByNameAndEmailAndPassword("testing", "testing@gmail", "1234")).thenReturn(true);
 
-        boolean isValid = userService.validateUser("Vinicius Dias", "vinicius@email.com", "123456");
+        boolean isValid = userService.validateUser("testing", "testing@gmail", "1234");
 
         assertTrue(isValid);
-        verify(userRepository, times(1)).existsByNameAndEmail("Vinicius Dias", "vinicius@email.com");
+        verify(userRepository, times(1)).existsByNameAndEmailAndPassword("testing", "testing@gmail", "1234");
     }
 
     @Test
