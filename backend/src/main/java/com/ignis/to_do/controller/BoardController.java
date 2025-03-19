@@ -1,6 +1,7 @@
 package com.ignis.to_do.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,17 +26,17 @@ public class BoardController {
     private BoardService boardService;
 
     @PostMapping("/createBoard")
-    public BoardDTO createBoard(
+    public ResponseEntity<BoardDTO> createBoard(
         @RequestBody BoardDTO boardDTO){
 
-        return boardService.createBoard(boardDTO);
+        return ResponseEntity.ok(boardService.createBoard(boardDTO));
     }
     
     @GetMapping("/getBoard/{boardId}")
-    public BoardDTO getBoardDTO(
+    public ResponseEntity<BoardDTO> getBoardDTO(
         @PathVariable Long boardId) {
-        
-        return boardService.getBoardById(boardId);
+
+        return ResponseEntity.ok(boardService.getBoardById(boardId));
     }   
 
     @GetMapping("/allBoards")

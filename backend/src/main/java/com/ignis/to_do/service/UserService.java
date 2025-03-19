@@ -1,9 +1,12 @@
 package com.ignis.to_do.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ignis.to_do.dto.UserDTO;
+import com.ignis.to_do.exception.UserException.UserAlreadyExistsException;
+import com.ignis.to_do.exception.UserException.UserNotFoundException;
 import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.UserRepository;
 
@@ -18,7 +21,12 @@ public class UserService {
 
 
     public UserDTO createUser(UserDTO userDTO){
-        
+
+        Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistsException("Usuário com email " + userDTO.getEmail() + " já existe.");
+        }
+
         User user = new User(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         user = userRepository.save(user);
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
@@ -26,7 +34,8 @@ public class UserService {
     }
 
     public UserDTO getUserDTOById(Long userId){
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + userId + " não encontrado"));;
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
     }
 

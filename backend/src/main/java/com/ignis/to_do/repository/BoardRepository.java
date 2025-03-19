@@ -1,5 +1,7 @@
 package com.ignis.to_do.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +12,8 @@ import com.ignis.to_do.model.Board;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+
+    Optional<Board> findByTitle(String title);
     @Modifying
     @Query("UPDATE board b SET b.title = :title WHERE b.id = :id")
     void updateTitle(
@@ -23,6 +27,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         @Param("id") Long id,
         @Param("favorite") boolean favorite
         );
+
+    
 
     
 }

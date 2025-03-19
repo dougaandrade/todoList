@@ -1,5 +1,7 @@
 package com.ignis.to_do.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +14,7 @@ import com.ignis.to_do.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByNameAndEmail(String name, String email);
     boolean existsByNameAndEmailAndPassword(String name, String email, String password);
+    Optional<User> findByEmail(String email);
 
     @Modifying
     @Query("UPDATE users u SET u.name = :name, u.email = :email, u.password = :password WHERE u.id = :id")

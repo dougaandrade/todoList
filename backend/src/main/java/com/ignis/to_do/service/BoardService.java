@@ -1,10 +1,14 @@
 package com.ignis.to_do.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ignis.to_do.dto.BoardDTO;
 import com.ignis.to_do.dto.TaskListDTO;
+import com.ignis.to_do.exception.BoardException.BoardAlreadyExistsException;
+import com.ignis.to_do.exception.BoardException.BoardNotFoundException;
 import com.ignis.to_do.model.Board;
 import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.BoardRepository;
@@ -21,6 +25,11 @@ public class BoardService {
 
     public BoardDTO createBoard(BoardDTO boardDTO) {
 
+        Optional<Board> existingBoard = boardRepository.findByTitle(boardDTO.getTitle());
+        if (existingBoard.isPresent()) {
+            throw new BoardAlreadyExistsException("Board com nome '" + boardDTO.getTitle() + "' já existe.");
+        }
+
         User user = userService.getUser(boardDTO.getOwnerId());   
         Board board = new Board(boardDTO.getTitle(), user);
         boardRepository.save(board);
@@ -30,7 +39,9 @@ public class BoardService {
 
     public BoardDTO getBoardById(Long boardId) {
 
-        Board board = boardRepository.findById(boardId).get();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardNotFoundException("Board com ID " + boardId + " não encontrado"));
+
+
         return new BoardDTO(board.getId(), board.getTitle(), 
             board.getOwner().getId());
     }
