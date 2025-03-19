@@ -103,12 +103,12 @@ class UserServiceTest {
     @Test
     void testValidateUser() {
 
-        when(userRepository.existsByNameAndEmail("Vinicius Dias", "vinicius@email.com")).thenReturn(true);
+        when(userRepository.existsByNameAndEmailAndPassword("testing", "testing@gmail", "1234")).thenReturn(true);
 
-        boolean isValid = userService.validateUser("Vinicius Dias", "vinicius@email.com", "123456");
+        boolean isValid = userService.validateUser("testing", "testing@gmail", "1234");
 
         assertTrue(isValid);
-        verify(userRepository, times(1)).existsByNameAndEmail("Vinicius Dias", "vinicius@email.com");
+        verify(userRepository, times(1)).existsByNameAndEmailAndPassword("testing", "testing@gmail", "1234");
     }
 
     @Test
