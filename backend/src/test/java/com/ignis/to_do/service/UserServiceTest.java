@@ -82,7 +82,7 @@ class UserServiceTest {
             eq(1L), eq("Novo Nome"), eq("novo@email.com"), eq("654321")
         );
 
-        UserDTO updatedUser = userService.updateUserById(1L, new UserDTO(1L, "Novo Nome", "novo@email.com", "654321"));
+        UserDTO updatedUser = userService.updateUserById(new UserDTO(1L, "Novo Nome", "novo@email.com", "654321"));
 
         assertNotNull(updatedUser);
         assertEquals("Novo Nome", updatedUser.getName());

@@ -19,10 +19,10 @@ public class BoardService {
     @Autowired
     private UserService userService;    
 
-    public BoardDTO createBoard(String title, Long ownerId) {
+    public BoardDTO createBoard(BoardDTO boardDTO) {
 
-        User user = userService.getUser(ownerId);   
-        Board board = new Board(title, user);
+        User user = userService.getUser(boardDTO.getOwnerId());   
+        Board board = new Board(boardDTO.getTitle(), user);
         boardRepository.save(board);
         return new BoardDTO(board.getId(), board.getTitle(),
             board.getOwner().getId());
@@ -72,9 +72,10 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardDTO updateBoardTitle(Long boardId, String title) {
-        boardRepository.updateTitle(boardId, title);
-        return new BoardDTO(boardId, title, boardRepository.findById(boardId).get().getOwner().getId());
+    public BoardDTO updateBoardTitle(BoardDTO boardDTO) {
+        boardRepository.updateTitle(boardDTO.getId(), boardDTO.getTitle());
+        Long boardId = boardDTO.getId();
+        return new BoardDTO(boardId, boardDTO.getTitle(), boardRepository.findById(boardId).get().getOwner().getId());
     }
 
     

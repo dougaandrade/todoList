@@ -1,4 +1,4 @@
-package com.ignis.to_do.Validator;
+package com.ignis.to_do.validator;
 
 import java.util.List;
 

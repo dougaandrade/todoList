@@ -19,15 +19,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/users")
-// @AllArgsConstructor Analisar a necesseidade para evitar o @Autowired
-// @NoArgsConstructor
 @Tag(name = "User Controller", description = "Gerenciamento de Usuários")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/createUser")
     public UserDTO createUser(@RequestBody UserDTO userDTO) {
         
         return userService.createUser(userDTO);
@@ -58,12 +56,11 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/updateUser")
     public UserDTO updateUserById(
-        @PathVariable long userId,
         @RequestBody UserDTO userDTO) {
 
-        return userService.updateUserById(userId, userDTO);
+        return userService.updateUserById(userDTO);
     }
 
     @PutMapping("/updatePassword")

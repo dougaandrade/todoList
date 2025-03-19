@@ -18,16 +18,14 @@ public class TaskListService {
     @Autowired
     private BoardService boardService;
     
-    public TaskListDTO createTaskList(String title, Long boardId) {  
+    public TaskListDTO createTaskList(TaskListDTO taskListDTO) {
 
-        Board board = boardService.getBoard(boardId);
-        TaskList taskList = new TaskList(title, board);
+        Board board = boardService.getBoard(taskListDTO.getBoardId());
+        TaskList taskList = new TaskList(taskListDTO.getName(), board);
         taskListRepository.save(taskList);
         return new TaskListDTO(taskList.getId(), taskList.getName(), 
             taskList.getBoard().getId());
     }
-
-
 
     public TaskListDTO getTaskListById(Long taskLitsId) {
         TaskList taskList = taskListRepository.findById(taskLitsId).get();
@@ -52,18 +50,22 @@ public class TaskListService {
         taskListRepository.deleteById(taskListId);
     }
 
-    public TaskListDTO updateTaskListTitle(Long id, String title) {
-        TaskList taskList = taskListRepository.findById(id).get();
-        taskList.setName(title);
+    public TaskListDTO updateTaskListTitle(TaskListDTO taskListDTO) {
+        TaskList taskList = taskListRepository.findById(taskListDTO.getId()).get();
+        taskList.setName(taskListDTO.getName());
         taskListRepository.save(taskList);
         return new TaskListDTO(taskList.getId(), taskList.getName(), 
-        taskList.getBoard().getId());
+                                taskList.getBoard().getId());
     }
 
     @Transactional
-    public TaskListDTO updateBoardId(Long id, Long boardId) {
-        taskListRepository.updateBoardId(id, boardId);
-        return new TaskListDTO(id, taskListRepository.findById(id).get().getName(), boardId);
+    public TaskListDTO updateBoardId(TaskListDTO taskListDTO) {
+
+        Long id = taskListDTO.getId();
+        taskListRepository.updateBoardId(taskListDTO.getId(), taskListDTO.getBoardId());
+        return new TaskListDTO(id, taskListRepository.findById(id).get().getName(),
+                                taskListDTO.getBoardId());
+
     }
 
 }

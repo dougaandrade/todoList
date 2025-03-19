@@ -6,12 +6,12 @@ import java.time.ZoneId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ignis.to_do.Validator.StatusValidator;
 import com.ignis.to_do.dto.TaskDTO;
 import com.ignis.to_do.exception.TasksException.TaskNotFoundException;
 import com.ignis.to_do.model.Task;
 import com.ignis.to_do.model.TaskList;
 import com.ignis.to_do.repository.TaskRepository;
+import com.ignis.to_do.validator.StatusValidator;
 
 import jakarta.transaction.Transactional;
 
@@ -54,10 +54,14 @@ public class TaskService implements TaskReminder {
     }
 
     @Transactional
-    public TaskDTO updateTaskTitle(Long taskListId, String title) {
-        taskRepository.updateTaskTitle(taskListId, title);        
+    public TaskDTO updateTaskTitle(TaskDTO taskDTO) {
+
+        String title = taskDTO.getTitle();
+        Long taskListId = taskDTO.getId(); 
+        taskRepository.updateTaskTitle(taskListId, title); 
+
         return new TaskDTO(taskListId, title, taskRepository.findById(taskListId).get().getStatus(),
-         taskRepository.findById(taskListId).get().getList().getId());
+        taskRepository.findById(taskListId).get().getList().getId());
     }
     
     @Override

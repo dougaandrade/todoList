@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,17 +24,16 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    @PostMapping("/createBoard/{title}/{ownerId}")
+    @PostMapping("/createBoard")
     public BoardDTO createBoard(
-        @PathVariable String title,
-        @PathVariable Long ownerId
-        ){
+        @RequestBody BoardDTO boardDTO){
 
-        return boardService.createBoard(title, ownerId);
+        return boardService.createBoard(boardDTO);
     }
     
     @GetMapping("/getBoard/{boardId}")
-    public BoardDTO getBoardDTO(@PathVariable Long boardId) {
+    public BoardDTO getBoardDTO(
+        @PathVariable Long boardId) {
         
         return boardService.getBoardById(boardId);
     }   
@@ -45,28 +45,31 @@ public class BoardController {
     }
 
     @GetMapping("myBoards/{boardId}")
-    public Iterable<BoardDTO> getMyBoardsByOwnerId(@PathVariable Long boardId) {
+    public Iterable<BoardDTO> getMyBoardsByOwnerId(
+        @PathVariable Long boardId) {
         
         return boardService.getMyBoardsByOwnerId(boardId);
     }
 
     @GetMapping("/isFavorite/{boardId}")
-    public Boolean isFavorite(@PathVariable Long boardId) {  
+    public Boolean isFavorite(
+        @PathVariable Long boardId) {  
 
         return boardService.isFavorite(boardId);
     }
 
     @GetMapping("myTasksByBoard/{boardId}")
-    public Iterable<TaskListDTO> myTasksListsByBoard(@PathVariable Long boardId){
+    public Iterable<TaskListDTO> myTasksListsByBoard(
+        @PathVariable Long boardId){
+
         return boardService.myTasksListsByBoardId(boardId);
     }
 
-    @PutMapping("/updateBoardTitle/{boardId}/{title}")
+    @PutMapping("/updateBoardTitle")
     public BoardDTO updateBoardTitle(
-        @PathVariable Long boardId,
-        @PathVariable String title) {
+        @RequestBody BoardDTO boardDTO) {
             
-        return boardService.updateBoardTitle(boardId, title);
+        return boardService.updateBoardTitle(boardDTO);
     }
 
     @PutMapping("/toggleFavorite/{boardId}")

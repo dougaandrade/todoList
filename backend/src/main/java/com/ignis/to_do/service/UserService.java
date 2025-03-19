@@ -37,9 +37,9 @@ public class UserService {
 
     
     @Transactional
-    public UserDTO updateUserById(long userId, UserDTO userDTO) {
-        userRepository.updateUser(userId, userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
-        return new UserDTO(userId, userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
+    public UserDTO updateUserById(UserDTO userDTO) {
+        userRepository.updateUser(userDTO.getId(), userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
+        return new UserDTO(userDTO.getId(), userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
     }
 
 
