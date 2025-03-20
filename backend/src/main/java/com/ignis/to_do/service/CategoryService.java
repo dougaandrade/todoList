@@ -1,8 +1,12 @@
 package com.ignis.to_do.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ignis.to_do.exception.CategoryException.CategoryAlreadyExistsException;
+import com.ignis.to_do.exception.CategoryException.CategoryNotFoundException;
 import com.ignis.to_do.model.Category;
 import com.ignis.to_do.repository.CategoryRepository;
 
@@ -15,6 +19,11 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     public Category createCategory(Category category) {
+
+        Optional<Category> existingCategory = categoryRepository.findByName(category.getName());
+        if (existingCategory.isPresent()) {
+            throw new CategoryAlreadyExistsException("Categoria com nome '" + category.getName() + "' já existe.");
+        }
         return categoryRepository.save(category);
     }
 
@@ -23,7 +32,9 @@ public class CategoryService {
     }   
     
     public Category getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId).get();
+        return categoryRepository.findById(categoryId).orElseThrow(() -> 
+        new CategoryNotFoundException("Categoria com ID " + categoryId + " não encontrada"));
+
     }
 
     public void deleteCategoryById(Long categoryId) {
