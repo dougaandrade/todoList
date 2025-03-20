@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,12 +40,11 @@ public class CategoryController {
         return categoryService.getAllCategories();
     }
     
-    @PutMapping("/updateCategoryName/{categoryId}/{name}")
+    @PutMapping("/updateCategoryName")
     public Category updateCategoryName(
-        @PathVariable Long categoryId,
-        @PathVariable String newCategoryName) {
+        @RequestBody Category category) {
             
-        return categoryService.updateCategoryName(categoryId, newCategoryName);
+        return categoryService.updateCategoryName(category);
     }
 
     @DeleteMapping("/deleteCategory/{categoryId}")
