@@ -144,8 +144,14 @@ O back-end será construído utilizando o framework **Spring Boot** com **Postgr
    ```
 4. O front-end estará disponível em `http://localhost:4200`.
 
-## Testes //TODO
-Ainda será implementado
+## Testes
+
+Os teste se encontram no caminho:
+  ```bash
+   cd projeto-ignis-todo/backend/src/test/java/com/ignis/todo
+  ```
+
+Verifique a organização e insira seus testes unitários de acordo com o contexto adequado.
 
 Para rodar os testes:
 - **Back-end:**
@@ -156,6 +162,8 @@ Para rodar os testes:
   ```bash
   ng test
   ```
+
+  Para uma melhor visualização, analíse e execute os testes na barra lateral do VSCode na opção de "Testing".
 
 ## Planejamento Futuro
 - **Versões em outras stacks**: Após a conclusão da versão em Java + Angular, as versões em Node.js + React, C# + Vue.js e Python + Vue.js poderão ser desenvolvidas.

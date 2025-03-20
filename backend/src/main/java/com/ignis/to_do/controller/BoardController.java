@@ -1,11 +1,13 @@
 package com.ignis.to_do.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,19 +25,18 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    @PostMapping("/createBoard/{title}/{ownerId}")
-    public BoardDTO createBoard(
-        @PathVariable String title,
-        @PathVariable Long ownerId
-        ){
+    @PostMapping("/createBoard")
+    public ResponseEntity<BoardDTO> createBoard(
+        @RequestBody BoardDTO boardDTO){
 
-        return boardService.createBoard(title, ownerId);
+        return ResponseEntity.ok(boardService.createBoard(boardDTO));
     }
     
     @GetMapping("/getBoard/{boardId}")
-    public BoardDTO getBoardDTO(@PathVariable Long boardId) {
-        
-        return boardService.getBoardById(boardId);
+    public ResponseEntity<BoardDTO> getBoardDTO(
+        @PathVariable Long boardId) {
+
+        return ResponseEntity.ok(boardService.getBoardById(boardId));
     }   
 
     @GetMapping("/allBoards")
@@ -45,28 +46,31 @@ public class BoardController {
     }
 
     @GetMapping("myBoards/{boardId}")
-    public Iterable<BoardDTO> getMyBoardsByOwnerId(@PathVariable Long boardId) {
+    public Iterable<BoardDTO> getMyBoardsByOwnerId(
+        @PathVariable Long boardId) {
         
         return boardService.getMyBoardsByOwnerId(boardId);
     }
 
     @GetMapping("/isFavorite/{boardId}")
-    public Boolean isFavorite(@PathVariable Long boardId) {  
+    public Boolean isFavorite(
+        @PathVariable Long boardId) {  
 
         return boardService.isFavorite(boardId);
     }
 
     @GetMapping("myTasksByBoard/{boardId}")
-    public Iterable<TaskListDTO> myTasksListsByBoard(@PathVariable Long boardId){
+    public Iterable<TaskListDTO> myTasksListsByBoard(
+        @PathVariable Long boardId){
+
         return boardService.myTasksListsByBoardId(boardId);
     }
 
-    @PutMapping("/updateBoardTitle/{boardId}/{title}")
+    @PutMapping("/updateBoardTitle")
     public BoardDTO updateBoardTitle(
-        @PathVariable Long boardId,
-        @PathVariable String title) {
+        @RequestBody BoardDTO boardDTO) {
             
-        return boardService.updateBoardTitle(boardId, title);
+        return boardService.updateBoardTitle(boardDTO);
     }
 
     @PutMapping("/toggleFavorite/{boardId}")

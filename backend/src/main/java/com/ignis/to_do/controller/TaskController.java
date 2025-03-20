@@ -1,6 +1,7 @@
 package com.ignis.to_do.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +19,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/task")
-// @AllArgsConstructor Analisar a necesseidade para evitar o @Autowired
-// @NoArgsConstructor   
 @Tag(name = "Task Controller", description = "Gerenciamento de tarefas")
 public class TaskController {
 
@@ -27,17 +26,10 @@ public class TaskController {
     TaskService taskService;
 
     @PostMapping("/createTask")
-    public TaskDTO createTask(@Valid @RequestBody TaskDTO taskDTO) {
-
-        return taskService.createTask(taskDTO);
+    public ResponseEntity<String> createTask(@Valid @RequestBody TaskDTO taskDTO) {
+        String response = taskService.createTask(taskDTO);
+        return ResponseEntity.ok(response);
     }
-    // @PostMapping("/createTask/{titulo}/{taskListId}")
-    // public TaskDTO createTask(
-    //     @PathVariable String titulo,
-    //     @PathVariable Long taskListId) {
-
-    //     return taskService.createTask(titulo, taskListId);
-    // }
 
     @GetMapping("/getTask/{taskId}")
     public TaskDTO getTaskById(@PathVariable Long taskId) {
@@ -51,17 +43,21 @@ public class TaskController {
         return taskService.getAllTasks();
     }   
     
-    @PutMapping("/updateTask/{taskId}/{title}")
+    @PutMapping("/updateTaskTitle")
     public TaskDTO updateTaskTitle(
-        @PathVariable Long taskId,
-        @PathVariable String title) {
+        @RequestBody TaskDTO taskDTO) {
             
-        return taskService.updateTaskTitle(taskId, title);
+        return taskService.updateTaskTitle(taskDTO);
     }
 
     @DeleteMapping("/deleteTask/{taskId}")
     public void deleteTaskById(@PathVariable Long taskId) {
         
         taskService.deleteTaskById(taskId); 
+    }
+
+    @GetMapping("/checkOverdueTasks/{taskId}")
+    public String checkOverdueTasks(@PathVariable Long taskId) {
+        return taskService.checkOverdueTasks(taskId); 
     }
 }   

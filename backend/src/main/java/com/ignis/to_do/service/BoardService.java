@@ -1,10 +1,14 @@
 package com.ignis.to_do.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ignis.to_do.dto.BoardDTO;
 import com.ignis.to_do.dto.TaskListDTO;
+import com.ignis.to_do.exception.BoardException.BoardAlreadyExistsException;
+import com.ignis.to_do.exception.BoardException.BoardNotFoundException;
 import com.ignis.to_do.model.Board;
 import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.BoardRepository;
@@ -19,10 +23,15 @@ public class BoardService {
     @Autowired
     private UserService userService;    
 
-    public BoardDTO createBoard(String title, Long ownerId) {
+    public BoardDTO createBoard(BoardDTO boardDTO) {
 
-        User user = userService.getUser(ownerId);   
-        Board board = new Board(title, user);
+        Optional<Board> existingBoard = boardRepository.findByTitle(boardDTO.getTitle());
+        if (existingBoard.isPresent()) {
+            throw new BoardAlreadyExistsException("Board com nome '" + boardDTO.getTitle() + "' já existe.");
+        }
+
+        User user = userService.getUser(boardDTO.getOwnerId());   
+        Board board = new Board(boardDTO.getTitle(), user);
         boardRepository.save(board);
         return new BoardDTO(board.getId(), board.getTitle(),
             board.getOwner().getId());
@@ -30,7 +39,9 @@ public class BoardService {
 
     public BoardDTO getBoardById(Long boardId) {
 
-        Board board = boardRepository.findById(boardId).get();
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardNotFoundException("Board com ID " + boardId + " não encontrado"));
+
+
         return new BoardDTO(board.getId(), board.getTitle(), 
             board.getOwner().getId());
     }
@@ -72,9 +83,10 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardDTO updateBoardTitle(Long boardId, String title) {
-        boardRepository.updateTitle(boardId, title);
-        return new BoardDTO(boardId, title, boardRepository.findById(boardId).get().getOwner().getId());
+    public BoardDTO updateBoardTitle(BoardDTO boardDTO) {
+        boardRepository.updateTitle(boardDTO.getId(), boardDTO.getTitle());
+        Long boardId = boardDTO.getId();
+        return new BoardDTO(boardId, boardDTO.getTitle(), boardRepository.findById(boardId).get().getOwner().getId());
     }
 
     
