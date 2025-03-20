@@ -63,10 +63,6 @@ public class UserService {
         userRepository.updatePasswordById(userDTO.getId(), userDTO.getPassword());
     }
 
-    public boolean validateUser(String name, String email, String password) {
-        return userRepository.existsByNameAndEmailAndPassword(name, email, password);
-    }  
-
     public User getUser(Long id){
         return userRepository.findById(id).get();
     }

@@ -16,12 +16,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.UserRepository;
+import com.ignis.to_do.validator.UserValidator;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @InjectMocks
+    private UserValidator userValidator;
 
     @InjectMocks
     private UserService userService;
@@ -105,7 +109,7 @@ class UserServiceTest {
 
         when(userRepository.existsByNameAndEmailAndPassword("testing", "testing@gmail", "1234")).thenReturn(true);
 
-        boolean isValid = userService.validateUser("testing", "testing@gmail", "1234");
+        boolean isValid = userValidator.validateUser("testing", "testing@gmail", "1234");
 
         assertTrue(isValid);
         verify(userRepository, times(1)).existsByNameAndEmailAndPassword("testing", "testing@gmail", "1234");
