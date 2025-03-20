@@ -43,19 +43,26 @@ public class TaskService implements TaskReminder {
         return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()); 
     }
 
+    public void verifyTask(Long taskId) {
+        taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
+    }
+
     public Iterable<TaskDTO> getAllTasks() {
 
         return taskRepository.findAll().stream().map(task -> new TaskDTO(task.getId(),
             task.getTitle(), task.getStatus(), task.getList().getId())).toList();
     }
     
-    public void deleteTaskById(Long taskId) {        
+    public void deleteTaskById(Long taskId) { 
+        verifyTask(taskId);       
         taskRepository.deleteById(taskId);     
     }
 
     @Transactional
     public TaskDTO updateTaskTitle(TaskDTO taskDTO) {
 
+        verifyTask(taskDTO.getId());
         String title = taskDTO.getTitle();
         Long taskListId = taskDTO.getId(); 
         taskRepository.updateTaskTitle(taskListId, title); 
@@ -67,7 +74,7 @@ public class TaskService implements TaskReminder {
     @Override
     public String checkOverdueTasks(Long taskId) {
         
-
+        verifyTask(taskId);
         Task task = taskRepository.findById(taskId).get();
         LocalDate today = LocalDate.now();
         LocalDate taskDueDate = task.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();

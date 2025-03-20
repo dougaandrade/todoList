@@ -44,6 +44,11 @@ public class TaskListService {
             taskList.getBoard().getId());
     }
 
+    public void verifiyTaskList(Long taskListId) {
+        taskListRepository.findById(taskListId).orElseThrow(() -> 
+        new TaskListNotFoundException("TaskList com ID " + taskListId + " não encontrada"));
+    }
+
     public Iterable<TaskListDTO> getAllTaskLists() {
         return taskListRepository.findAll().stream().map(taskList -> new TaskListDTO(
             taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
@@ -53,15 +58,18 @@ public class TaskListService {
         return taskListRepository.findById(id).get();        
     }
 
-    public void deleteTaskList(TaskList taskList) {        
+    public void deleteTaskList(TaskList taskList) {     
+        verifiyTaskList(taskList.getId());   
         taskListRepository.delete(taskList);        
     }
 
     public void deleteTaskListById(Long taskListId) {
+        verifiyTaskList(taskListId);   
         taskListRepository.deleteById(taskListId);
     }
 
     public TaskListDTO updateTaskListTitle(TaskListDTO taskListDTO) {
+        verifiyTaskList(taskListDTO.getId());
         TaskList taskList = taskListRepository.findById(taskListDTO.getId()).get();
         taskList.setName(taskListDTO.getName());
         taskListRepository.save(taskList);
@@ -71,7 +79,7 @@ public class TaskListService {
 
     @Transactional
     public TaskListDTO updateBoardId(TaskListDTO taskListDTO) {
-
+        verifiyTaskList(taskListDTO.getId());
         Long id = taskListDTO.getId();
         taskListRepository.updateBoardId(taskListDTO.getId(), taskListDTO.getBoardId());
         return new TaskListDTO(id, taskListRepository.findById(id).get().getName(),
