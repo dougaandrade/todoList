@@ -15,13 +15,16 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
     
-    // VERIFICAR SE PRECISA SER private final
     @Autowired
     private UserRepository userRepository;
 
 
     public UserDTO createUser(UserDTO userDTO){
 
+        if ((userDTO.getId()) != null) {
+            verifyUser(userDTO.getId());
+        }
+        
         Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException("Usuário com email " + userDTO.getEmail() + " já existe.");
@@ -35,8 +38,13 @@ public class UserService {
 
     public UserDTO getUserDTOById(Long userId){
         User user = userRepository.findById(userId)
-        .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + userId + " não encontrado"));;
+        .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + userId + " não encontrado"));
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+    }
+
+    public void verifyUser(Long userId){
+        userRepository.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException("Usuário com ID " + userId + " não encontrado"));
     }
 
     public Iterable<UserDTO> getAllUsers(){
@@ -47,6 +55,8 @@ public class UserService {
     
     @Transactional
     public UserDTO updateUserById(UserDTO userDTO) {
+
+        verifyUser(userDTO.getId());
         userRepository.updateUser(userDTO.getId(), userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         return new UserDTO(userDTO.getId(), userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
     }
@@ -54,18 +64,18 @@ public class UserService {
 
 
     public void deleteUserById(Long userId){ 
+
+        verifyUser(userId);
         User user = userRepository.findById(userId).get();
         userRepository.delete(user);
     }
 
     @Transactional
     public void updatePasswordById(UserDTO userDTO) {
+
+        verifyUser(userDTO.getId());
         userRepository.updatePasswordById(userDTO.getId(), userDTO.getPassword());
     }
-
-    public boolean validateUser(String name, String email, String password) {
-        return userRepository.existsByNameAndEmailAndPassword(name, email, password);
-    }  
 
     public User getUser(Long id){
         return userRepository.findById(id).get();

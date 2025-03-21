@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.service.UserService;
+import com.ignis.to_do.validator.UserValidator;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -24,6 +25,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserValidator userValidator;
+
     @PostMapping("/createUser")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         
@@ -33,7 +37,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
         
-        boolean isValid = userService.validateUser(
+        boolean isValid = userValidator.validateUser(
             userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         
         if (isValid) {

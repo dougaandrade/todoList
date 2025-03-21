@@ -32,18 +32,25 @@ public class CategoryService {
     }   
     
     public Category getCategoryById(Long categoryId) {
+
         return categoryRepository.findById(categoryId).orElseThrow(() -> 
         new CategoryNotFoundException("Categoria com ID " + categoryId + " não encontrada"));
+    }
 
+    public void verifiyCategory(Long categoryId) {
+        categoryRepository.findById(categoryId).orElseThrow(() -> 
+        new CategoryNotFoundException("Categoria com ID " + categoryId + " não encontrada"));
     }
 
     public void deleteCategoryById(Long categoryId) {
+        verifiyCategory(categoryId);
         categoryRepository.deleteById(categoryId);
     }
     
     @Transactional
-    public Category updateCategoryName(Long categoryId, String newCategotyName) {
-        categoryRepository.updateCategoryName(categoryId, newCategotyName);
-        return categoryRepository.findById(categoryId).get();
+    public Category updateCategoryName(Category category) {
+        verifiyCategory(category.getId());
+        categoryRepository.updateCategoryName(category.getId(), category.getName());
+        return categoryRepository.findById(category.getId()).get();
     }
 }

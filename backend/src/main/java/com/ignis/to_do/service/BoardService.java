@@ -40,10 +40,12 @@ public class BoardService {
     public BoardDTO getBoardById(Long boardId) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new BoardNotFoundException("Board com ID " + boardId + " não encontrado"));
-
-
         return new BoardDTO(board.getId(), board.getTitle(), 
             board.getOwner().getId());
+    }
+
+    public void verifyBoard(Long boardId) {
+        boardRepository.findById(boardId).orElseThrow(() -> new BoardNotFoundException("Board com ID " + boardId + " não encontrado"));
     }
 
     public Iterable<BoardDTO> getAllBoards() {
@@ -68,22 +70,27 @@ public class BoardService {
 
     public boolean isFavorite(Long boardId) {
 
+        verifyBoard(boardId);
         Boolean boardIsFavorite = boardRepository.findById(boardId).get().isFavorite();
         return boardIsFavorite;
     }
 
     @Transactional
     public void toggleFavorite(Long boardId) {
-
+        
+        verifyBoard(boardId);
         Boolean board = boardRepository.findById(boardId).get().isFavorite();
         boardRepository.updateFavorite(boardId, !board);
     }
     public void deleteBoardById(Long boardId) {
+        verifyBoard(boardId);
         boardRepository.deleteById(boardId);
     }
 
     @Transactional
     public BoardDTO updateBoardTitle(BoardDTO boardDTO) {
+
+        verifyBoard(boardDTO.getId());
         boardRepository.updateTitle(boardDTO.getId(), boardDTO.getTitle());
         Long boardId = boardDTO.getId();
         return new BoardDTO(boardId, boardDTO.getTitle(), boardRepository.findById(boardId).get().getOwner().getId());
