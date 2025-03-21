@@ -19,10 +19,7 @@ public class StatusValidator {
 
     public boolean validateStatus(String status) {
         
-        if (statusList.contains(status)) {
-            return true;
-        }
-        return false;
+        return statusList.contains(status);
     }
 
 }
