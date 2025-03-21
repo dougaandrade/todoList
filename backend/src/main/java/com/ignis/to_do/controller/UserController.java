@@ -1,6 +1,5 @@
 package com.ignis.to_do.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.service.UserService;
+import com.ignis.to_do.validator.UserValidator;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -21,8 +21,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "User Controller", description = "Gerenciamento de Usuários")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    
+    private final UserService userService;
+    private final UserValidator userValidator;
+
+    public UserController(UserService userService, UserValidator userValidator) {
+        this.userValidator = userValidator;
+        this.userService = userService;
+    }
 
     @PostMapping("/createUser")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
@@ -33,7 +39,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
         
-        boolean isValid = userService.validateUser(
+        boolean isValid = userValidator.validateUser(
             userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
         
         if (isValid) {

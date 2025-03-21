@@ -2,6 +2,8 @@ package com.ignis.to_do.controller;
 
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.service.UserService;
+import com.ignis.to_do.validator.UserValidator;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +23,9 @@ class UserControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private UserValidator userValidator;
 
     @InjectMocks
     private UserController userController;
@@ -52,7 +57,7 @@ class UserControllerTest {
     @Test
     void testLogin() throws Exception {
 
-        when(userService.validateUser("João", "joao@email.com", "senha123")).thenReturn(true);
+        when(userValidator.validateUser("João", "joao@email.com", "senha123")).thenReturn(true);
 
         mockMvc.perform(post("/users/login")
                             .contentType("application/json")
@@ -60,6 +65,6 @@ class UserControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().string("Logado com sucesso"));
 
-        verify(userService, times(1)).validateUser("João", "joao@email.com", "senha123");
+        verify(userValidator, times(1)).validateUser("João", "joao@email.com", "senha123");
     }
 }
