@@ -1,6 +1,5 @@
 package com.ignis.to_do.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +17,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "TaskList Controller", description = "Gerenciamento de listas de tarefas")
 public class TaskListController {
     
-    @Autowired
-    TaskListService taskListService;
+    private final TaskListService taskListService;
+
+    public TaskListController(TaskListService taskListService) {
+        this.taskListService = taskListService;
+    }
     
     @PostMapping("/createTaskList")
     public TaskListDTO createTaskList(
