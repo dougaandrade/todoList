@@ -3,11 +3,10 @@ package com.ignis.to_do.service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ignis.to_do.dto.TaskDTO;
-import com.ignis.to_do.exception.TasksException.TaskNotFoundException;
+import com.ignis.to_do.exception.task_exception.TaskNotFoundException;
 import com.ignis.to_do.model.Task;
 import com.ignis.to_do.model.TaskList;
 import com.ignis.to_do.repository.TaskRepository;
@@ -17,10 +16,16 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TaskService implements TaskReminder {
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private TaskListService taskListService;
+
+    private final TaskRepository taskRepository;
+    private final TaskListService taskListService;
+
+    private static final String TASK_NOT_FOUND = "Task com ID %s nao encontrado";
+
+    public TaskService(TaskRepository taskRepository, TaskListService taskListService) {
+        this.taskRepository = taskRepository;
+        this.taskListService = taskListService;
+    }
 
     public String createTask(TaskDTO taskDTO) {  
 
@@ -38,14 +43,14 @@ public class TaskService implements TaskReminder {
     }
 
     public TaskDTO getTaskById(Long taskId) {  
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new TaskNotFoundException(taskId));    
+        Task task = taskRepository.findById(taskId).orElseThrow(()
+         -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId))); 
         return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()); 
     }
 
-    public void verifyTask(Long taskId) {
+    public void verifyIfTaskExists(Long taskId) {
         taskRepository.findById(taskId)
-                .orElseThrow(() -> new TaskNotFoundException(taskId));
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId)));
     }
 
     public Iterable<TaskDTO> getAllTasks() {
@@ -55,27 +60,29 @@ public class TaskService implements TaskReminder {
     }
     
     public void deleteTaskById(Long taskId) { 
-        verifyTask(taskId);       
+        verifyIfTaskExists(taskId);       
         taskRepository.deleteById(taskId);     
     }
 
     @Transactional
     public TaskDTO updateTaskTitle(TaskDTO taskDTO) {
 
-        verifyTask(taskDTO.getId());
+        verifyIfTaskExists(taskDTO.getId());
         String title = taskDTO.getTitle();
         Long taskListId = taskDTO.getId(); 
-        taskRepository.updateTaskTitle(taskListId, title); 
+        taskRepository.updateTaskTitle(taskListId, title);
+        Task task = taskRepository.findById(taskListId).orElseThrow(()
+         -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskListId))); 
 
-        return new TaskDTO(taskListId, title, taskRepository.findById(taskListId).get().getStatus(),
-        taskRepository.findById(taskListId).get().getList().getId());
+        return new TaskDTO(taskListId, title, task.getStatus(),task.getList().getId());
     }
     
     @Override
     public String checkOverdueTasks(Long taskId) {
         
-        verifyTask(taskId);
-        Task task = taskRepository.findById(taskId).get();
+        verifyIfTaskExists(taskId);
+        Task task = taskRepository.findById(taskId).orElseThrow(()
+         -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId)));
         LocalDate today = LocalDate.now();
         LocalDate taskDueDate = task.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
@@ -89,6 +96,7 @@ public class TaskService implements TaskReminder {
     }
 
     @Override
-    public void sendTaskReminder() {        
+    public void sendTaskReminder() {
+      // TODO document why this method is empty
     }
 }

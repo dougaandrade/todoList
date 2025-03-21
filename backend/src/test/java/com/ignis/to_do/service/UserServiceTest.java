@@ -2,7 +2,6 @@ package com.ignis.to_do.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +40,7 @@ class UserServiceTest {
 
     @Test
     void testCreateUser() {
-
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserDTO createdUser = userService.createUser(userDTO);
@@ -82,9 +81,9 @@ class UserServiceTest {
     @Test
     void testUpdateUserById() {
 
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         doNothing().when(userRepository).updateUser(
-            eq(1L), eq("Novo Nome"), eq("novo@email.com"), eq("654321")
-        );
+            1L, "Novo Nome", "novo@email.com", "654321");
 
         UserDTO updatedUser = userService.updateUserById(new UserDTO(1L, "Novo Nome", "novo@email.com", "654321"));
 
@@ -117,14 +116,14 @@ class UserServiceTest {
 
     @Test
     void testGetUser() {
-
+        
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
+    
         User foundUser = userService.getUser(1L);
-
+    
         assertNotNull(foundUser);
         assertEquals(user.getId(), foundUser.getId());
         assertEquals(user.getName(), foundUser.getName());
-        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository, times(2)).findById(1L);
     }
 }

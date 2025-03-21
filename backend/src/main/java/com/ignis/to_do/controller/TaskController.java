@@ -1,6 +1,5 @@
 package com.ignis.to_do.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +21,11 @@ import jakarta.validation.Valid;
 @Tag(name = "Task Controller", description = "Gerenciamento de tarefas")
 public class TaskController {
 
-    @Autowired
-    TaskService taskService;
+    private final TaskService taskService;
+
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @PostMapping("/createTask")
     public ResponseEntity<String> createTask(@Valid @RequestBody TaskDTO taskDTO) {
