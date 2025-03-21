@@ -2,12 +2,10 @@ package com.ignis.to_do.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ignis.to_do.dto.TaskListDTO;
-import com.ignis.to_do.exception.TaskListException.TaskListAlreadyExistsException;
-import com.ignis.to_do.exception.TaskListException.TaskListNotFoundException;
+import com.ignis.to_do.exception.task_list_exception.TaskListAlreadyExistsException;
+import com.ignis.to_do.exception.task_list_exception.TaskListNotFoundException;
 import com.ignis.to_do.model.Board;
 import com.ignis.to_do.model.TaskList;
 import com.ignis.to_do.repository.TaskListRepository;
@@ -17,10 +15,15 @@ import jakarta.transaction.Transactional;
 @Service
 public class TaskListService {
 
-    @Autowired
-    private TaskListRepository taskListRepository;
-    @Autowired
-    private BoardService boardService;
+    private final TaskListRepository taskListRepository;
+    private final BoardService boardService;
+
+    private static final String TASK_LIST_NOT_FOUND = "TaskList com ID %s nao encontrado";
+
+    public TaskListService(TaskListRepository taskListRepository, BoardService boardService) {
+        this.taskListRepository = taskListRepository;
+        this.boardService = boardService;
+    }
     
     public TaskListDTO createTaskList(TaskListDTO taskListDTO) {
 
@@ -38,15 +41,15 @@ public class TaskListService {
 
     public TaskListDTO getTaskListById(Long taskLitsId) {
         TaskList taskList = taskListRepository.findById(taskLitsId).orElseThrow(() -> 
-        new TaskListNotFoundException("TaskList com ID " + taskLitsId + " não encontrada"));
+        new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskLitsId)));
 
         return new TaskListDTO(taskList.getId(), taskList.getName(), 
             taskList.getBoard().getId());
     }
 
-    public void verifiyTaskList(Long taskListId) {
+    public void verifyIfTaskListExists(Long taskListId) {
         taskListRepository.findById(taskListId).orElseThrow(() -> 
-        new TaskListNotFoundException("TaskList com ID " + taskListId + " não encontrada"));
+        new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListId)));
     }
 
     public Iterable<TaskListDTO> getAllTaskLists() {
@@ -54,23 +57,25 @@ public class TaskListService {
             taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
     }
 
-    public TaskList getList(Long id) {
-        return taskListRepository.findById(id).get();        
+    public TaskList getList(Long taskListId) {
+        return taskListRepository.findById(taskListId).orElseThrow(() -> 
+        new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListId)));        
     }
 
     public void deleteTaskList(TaskList taskList) {     
-        verifiyTaskList(taskList.getId());   
+        verifyIfTaskListExists(taskList.getId());   
         taskListRepository.delete(taskList);        
     }
 
     public void deleteTaskListById(Long taskListId) {
-        verifiyTaskList(taskListId);   
+        verifyIfTaskListExists(taskListId);   
         taskListRepository.deleteById(taskListId);
     }
 
     public TaskListDTO updateTaskListTitle(TaskListDTO taskListDTO) {
-        verifiyTaskList(taskListDTO.getId());
-        TaskList taskList = taskListRepository.findById(taskListDTO.getId()).get();
+
+        TaskList taskList = taskListRepository.findById(taskListDTO.getId()).orElseThrow(() -> 
+        new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListDTO.getId())));
         taskList.setName(taskListDTO.getName());
         taskListRepository.save(taskList);
         return new TaskListDTO(taskList.getId(), taskList.getName(), 
@@ -79,10 +84,13 @@ public class TaskListService {
 
     @Transactional
     public TaskListDTO updateBoardId(TaskListDTO taskListDTO) {
-        verifiyTaskList(taskListDTO.getId());
-        Long id = taskListDTO.getId();
+
+        verifyIfTaskListExists(taskListDTO.getId());
+        Long taskListId = taskListDTO.getId();
         taskListRepository.updateBoardId(taskListDTO.getId(), taskListDTO.getBoardId());
-        return new TaskListDTO(id, taskListRepository.findById(id).get().getName(),
+        TaskList taskList = taskListRepository.findById(taskListId).orElseThrow(() -> 
+        new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListId)));
+        return new TaskListDTO(taskListId, taskList.getName(),
                                 taskListDTO.getBoardId());
 
     }
