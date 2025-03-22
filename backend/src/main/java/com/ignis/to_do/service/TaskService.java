@@ -2,6 +2,8 @@ package com.ignis.to_do.service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -98,5 +100,19 @@ public class TaskService implements TaskReminder {
     @Override
     public void sendTaskReminder() {
       // TODO document why this method is empty
+    }
+
+    public Iterable<TaskDTO> checkAllOverdueTasks() {
+        Iterable<TaskDTO> allTasks = getAllTasks();
+        List<TaskDTO> allOverdueTasks = new ArrayList<>();
+        for (TaskDTO task : allTasks) {
+            
+            if (checkOverdueTasks(task.getId()).equals("Lembrete de tarefa enviado.")) {        
+                allOverdueTasks.add(task);
+                
+            }
+        }
+
+       return allOverdueTasks;
     }
 }

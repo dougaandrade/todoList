@@ -58,8 +58,17 @@ public class TaskController {
         taskService.deleteTaskById(taskId); 
     }
 
-    @GetMapping("/checkOverdueTasks/{taskId}")
+    @GetMapping("/isOverdue/{taskId}")
     public String checkOverdueTasks(@PathVariable Long taskId) {
         return taskService.checkOverdueTasks(taskId); 
     }
+
+    @GetMapping("/checkAllOverdueTasks")
+    public Iterable<TaskDTO> checkAllOverdueTasks() {
+       return taskService.checkAllOverdueTasks(); 
+      
+    }
+
+
+
 }   
