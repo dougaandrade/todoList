@@ -80,7 +80,7 @@ public class TaskService implements TaskReminder {
     }
     
     @Override
-    public String checkOverdueTasks(Long taskId) {
+    public Boolean checkOverdueTasks(Long taskId) {
         
         verifyIfTaskExists(taskId);
         Task task = taskRepository.findById(taskId).orElseThrow(()
@@ -90,27 +90,30 @@ public class TaskService implements TaskReminder {
 
         if (taskDueDate.isBefore(today)) {
             sendTaskReminder();
-            return "Lembrete de tarefa enviado.";
+            return true;
         } 
         
-        return "A tarefa ainda não está atrasada.";
+        return false;
  
     }
 
     @Override
     public void sendTaskReminder() {
-      // TODO document why this method is empty
+    
     }
 
     public Iterable<TaskDTO> checkAllOverdueTasks() {
+        
         Iterable<TaskDTO> allTasks = getAllTasks();
         List<TaskDTO> allOverdueTasks = new ArrayList<>();
+
         for (TaskDTO task : allTasks) {
             
-            if (checkOverdueTasks(task.getId()).equals("Lembrete de tarefa enviado.")) {        
+            if (checkOverdueTasks(task.getId()).equals(true)) {        
                 allOverdueTasks.add(task);
-                
+
             }
+
         }
 
        return allOverdueTasks;
