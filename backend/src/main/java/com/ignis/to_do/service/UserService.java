@@ -1,31 +1,26 @@
 package com.ignis.to_do.service;
 
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.exception.user_exception.UserAlreadyExistsException;
 import com.ignis.to_do.exception.user_exception.UserNotFoundException;
 import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.UserRepository;
-
 import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
     
-    
     private final UserRepository userRepository;
-
     private static final String USER_NOT_FOUND = "Usuário com ID %s nao encontrado";
     private static final String USER_ALREADY_EXISTS = "Usuário com email %s já existe";
 
 
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        
     }
-
 
     public UserDTO createUser(UserDTO userDTO){
 

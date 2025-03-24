@@ -1,22 +1,27 @@
 package com.ignis.to_do.model;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
 public class Notification {
-    
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private User user;
-    private String message;      
-    private boolean read = false;      
     private Task task;
+    private String message;      
+    private boolean read = false;   
 
-    public Notification(String message, boolean read, Task task, User user) {
+    public Notification(User user, Task task, String message, boolean read) {
 
+        this.user = user;
+        this.task = task;
         this.message = message;
         this.read = read;
-        this.task = task;
-        this.user = user;
-
+        
     }
 
 }
