@@ -12,27 +12,33 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
 
-    // Chave secreta para assinar o token
-    private static final String SECRET_KEY = "MinhaChaveSuperSecretaComMaisDe32Caracteres!";
+    private final Dotenv dotenv;
+
+    public SecurityConfig(Dotenv dotenv) {
+        this.dotenv = dotenv;
+    }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/login", "/auth/register","/users/**","/board/**","/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers("/auth/login", "/auth/register", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/users/**", "/board/**").authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
-
-        return http.build();
+        
+        return http.build();    
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -47,8 +53,13 @@ public class SecurityConfig{
 
     @Bean
     JwtDecoder jwtDecoder() {
-        byte[] keyBytes = SECRET_KEY.getBytes();
-        SecretKeySpec secretKey = new SecretKeySpec(keyBytes, "HmacSHA256");
-        return NimbusJwtDecoder.withSecretKey(secretKey).build();
+        String secretKey = dotenv.get("JWT_SECRET_KEY");
+        if (secretKey == null || secretKey.length() < 32) {
+            throw new IllegalStateException("JWT_SECRET_KEY não configurada ou muito curta no .env");
+        }
+        
+        byte[] keyBytes = secretKey.getBytes();
+        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(secretKeySpec).build();
     }
 }

@@ -1,5 +1,6 @@
 package com.ignis.to_do.security;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -9,19 +10,22 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    // Chave teste para desenvolvimento
-    private final String SECRET_KEY = "MinhaChaveSuperSecretaComMaisDe32Caracteres!";
-    private final long EXPIRATION_TIME = 86400000; // 1 dia
+
+    private final Dotenv dotenv;
+
+    public JwtUtil(Dotenv dotenv) {
+        this.dotenv = dotenv;
+    }
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(dotenv.get("JWT_SECRET_KEY").getBytes());
     }
 
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(dotenv.get("EXPIRATION_TIME"))))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
