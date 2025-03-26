@@ -1,7 +1,5 @@
 package com.ignis.to_do.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.exception.user_exception.UserAlreadyExistsException;
@@ -27,28 +25,21 @@ public class UserService {
     }
 
 
-    public UserDTO createUser(UserDTO userDTO){
-
-        if ((userDTO.getId()) != null) {
+    public UserDTO createUser(UserDTO userDTO) {
+        if (userDTO.getId() != null) {
             verifyIfUserExists(userDTO.getId());
-        }
-        
-        Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
-        if (existingUser.isPresent()) {
+        } else if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException(USER_ALREADY_EXISTS.formatted(userDTO.getEmail()));
         }
 
-        User user = new User(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
-        user = userRepository.save(user);
+        User user = userRepository.save(new User(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword()));
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
-
     }
 
-    public UserDTO getUserDTOById(Long userId){
-        
-        User user = userRepository.findById(userId)
-        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(userId)));
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+    public UserDTO getUserDTOById(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword()))
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(userId)));
     }
 
     public void verifyIfUserExists(Long userId){
@@ -58,7 +49,7 @@ public class UserService {
 
     public Iterable<UserDTO> getAllUsers(){
         return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(),
-            user.getName(), user.getEmail(),  user.getPassword())).toList();
+            user.getName(), user.getEmail(), user.getPassword())).toList();
     }
 
     
