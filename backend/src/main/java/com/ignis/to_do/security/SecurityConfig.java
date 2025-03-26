@@ -15,9 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig{
 
-    // Use uma chave secreta com pelo menos 256 bits (32 bytes)
+    // Chave secreta para assinar o token
     private static final String SECRET_KEY = "MinhaChaveSuperSecretaComMaisDe32Caracteres!";
 
     @Bean
@@ -26,7 +26,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/auth/register","/users/**","/board/**").permitAll()
+                .requestMatchers(
+                    "/auth/login", "/auth/register","/users/**","/board/**","/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
