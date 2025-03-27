@@ -28,7 +28,7 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
 
         if (userService.verifyIfUserExists(userDTO)){
-            String token = jwtUtil.generateToken(userDTO.getName());
+            String token = jwtUtil.generateToken(userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
             return ResponseEntity.ok(token);
         }
 

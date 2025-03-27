@@ -21,9 +21,11 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(dotenv.get("JWT_SECRET_KEY").getBytes());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String email, String password) {
         return Jwts.builder()
                 .setSubject(username)
+                .setSubject(email)
+                .setSubject(password)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(dotenv.get("EXPIRATION_TIME"))))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
