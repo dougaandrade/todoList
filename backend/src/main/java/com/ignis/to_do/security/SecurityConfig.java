@@ -29,6 +29,7 @@ public class SecurityConfig{
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
+            .cors(cors -> cors.configure(http))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -62,4 +63,5 @@ public class SecurityConfig{
         SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec).build();
     }
+    
 }
