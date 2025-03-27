@@ -87,6 +87,6 @@ public class TaskService implements TaskReminder {
 
     @Override
     public void sendTaskReminder() {
-      // TODO document why this method is empty
+    // TODO
     }
 }
