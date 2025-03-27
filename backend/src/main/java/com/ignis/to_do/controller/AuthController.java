@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.security.JwtUtil;
+import com.ignis.to_do.service.UserService;
 
 
 
@@ -16,15 +17,23 @@ import com.ignis.to_do.security.JwtUtil;
 public class AuthController {
 
     private final JwtUtil jwtUtil;
+    private final UserService userService;
 
-    public AuthController(JwtUtil jwtUtil) {
+    public AuthController(JwtUtil jwtUtil, UserService userService) {
+        this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
 
-        String token = jwtUtil.generateToken(userDTO.getName());
-        return ResponseEntity.ok("Bearer " + token);
+        if (userService.verifyIfUserExists(userDTO)){
+            String token = jwtUtil.generateToken(userDTO.getName());
+            return ResponseEntity.ok(token);
+        }
+
+        return ResponseEntity.status(401).body("Usuário não encontrado");   
+
+
     }
 }
