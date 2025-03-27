@@ -98,8 +98,9 @@ public class TaskService implements TaskReminder {
     }
 
     @Override
-    public void sendTaskReminder() {
-    
+    public String sendTaskReminder() {
+        
+        return "Task is overdue";
     }
 
     public Iterable<TaskDTO> checkAllOverdueTasks() {
