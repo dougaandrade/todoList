@@ -28,19 +28,23 @@ export class LoginComponent {
   });
 
   login() {
+    debugger;
     const formValues = this.loginForm.value;
-    // debugger;
+    console.log('Valores do formulário:', formValues);  // Verifica os dados enviados
     this.loginService.login(formValues).subscribe({
-      next: (data) => {
-        console.log('Login bem-sucedido:', data);
-        this.router.navigate(['/main']); // Redireciona apenas após o sucesso
+      next: (data: any) => {
+        const token = data.split(" ")[1];  // Pega o token após "Bearer"
+        console.log('Login bem-sucedido:', token);
+        this.loginService.saveToken(token); 
+        this.router.navigate(['/main']);
       },
       error: (error) => {
         console.error('Erro no login:', error);
       }
     });
-    
   }
+  
+  
 
   getAllUsers() {
     this.loginService.getAllUsers().subscribe(data => {

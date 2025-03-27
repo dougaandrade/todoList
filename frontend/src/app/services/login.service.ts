@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -14,11 +14,31 @@ export class LoginService {
     return this.http.get(this.apiUrl+"users/all", { responseType: 'text' });
   }
 
-    login(user: { name: string; email: string }) {
-      
-      console.log("TA AI");
-      return this.http.post(this.apiUrl+"users/login", user, { responseType: 'text' });
+  login(user: { name: string; email: string }) {
+    // debugger;  
+    console.log("TA AI");
+    return this.http.post(this.apiUrl+"auth/login", user, { responseType: 'text' });
 
-    }
+  }
+
+  saveToken(token: string): void {
+    localStorage.setItem('jwtToken', token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('jwtToken');
+  }
+
+  getAuthenticatedHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  }
+
+  getProtectedResource(): Observable<any> {
+    const headers = this.getAuthenticatedHeaders();
+    return this.http.get(this.apiUrl + "protected/resource", { headers });
+  }
 
 }
