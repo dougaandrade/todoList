@@ -23,7 +23,7 @@ export class LoginComponent {
   loginForm: FormGroup = new FormGroup({
     name: new FormControl(""),
     email: new FormControl(""),
-    // password: new FormControl(""),
+    password: new FormControl(""),
 
   });
 
@@ -42,7 +42,7 @@ export class LoginComponent {
         console.error('Erro no login:', error);
       },
     });
-    this.router.navigate(['/main']);
+    // console.log(this.loginService.getToken());
   }
   
   getAllUsers() {
