@@ -1,0 +1,17 @@
+<div class="boards-page">
+  <header class="boards-header">
+    <h1 class="app-title">TaskFlow</h1>
+    <input type="text" placeholder="Buscar boards..." class="search-input" />
+    <button class="create-board-button" (click)="addBoard()">+ Criar Novo Board</button>
+  </header>
+  <div class="boards-container">
+    <div *ngFor="let board of boards" class="board-card">
+      <h3 class="board-title">{{ board.name }}</h3>
+      <p class="board-cards">{{ board.cardCount }} cards</p>
+      <div class="board-actions">
+        <button class="favorite-button">★</button>
+        <button class="delete-button" (click)="deleteBoard(board.id)">🗑</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginService {
-  private apiUrl = 'http://localhost:8080/'; // URL do backend
+  private readonly apiUrl = 'http://localhost:8080/'; // URL do backend
 
-  constructor(private http: HttpClient) { }
+  private readonly http=inject(HttpClient);
   
   getAllUsers(): Observable<string> {
     return this.http.get(this.apiUrl+"users/all", { responseType: 'text' });

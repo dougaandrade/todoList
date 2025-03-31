@@ -14,10 +14,10 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
 
-  constructor(private router: Router) {}
+  constructor(private readonly router: Router) {}
 
   name = 'Login';
-  private loginService = inject(LoginService);
+  private readonly loginService = inject(LoginService);
 
 
   loginForm: FormGroup = new FormGroup({
@@ -27,25 +27,24 @@ export class LoginComponent {
 
   });
 
-  login() {
-    debugger;
+  onLogin() {
     const formValues = this.loginForm.value;
-    console.log('Valores do formulário:', formValues);  // Verifica os dados enviados
+    console.log('Valores do formulário:', formValues);
+    // debugger;
     this.loginService.login(formValues).subscribe({
-      next: (data: any) => {
-        const token = data.split(" ")[1];  // Pega o token após "Bearer"
+      next: (data: string) => {
+        const token = data;  // Pega o token após "Bearer"
         console.log('Login bem-sucedido:', token);
         this.loginService.saveToken(token); 
         this.router.navigate(['/main']);
       },
       error: (error) => {
         console.error('Erro no login:', error);
-      }
+      },
     });
+    this.router.navigate(['/main']);
   }
   
-  
-
   getAllUsers() {
     this.loginService.getAllUsers().subscribe(data => {
       console.log(data);
