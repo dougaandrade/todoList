@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { LoginService } from '../services/login.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'; // Importação necessária
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common'; // Importação necessária
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule], // Adicionado CommonModule
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -34,13 +34,12 @@ export class LoginComponent {
     this.loginService.login(formValues).subscribe({
       next: (data: string) => {
         const token = data;
-        console.log('Login bem-sucedido:', token);
         this.loginService.saveToken(token);
-        this.userName = formValues.email.split('@')[0]; // Extrai o nome do email
+        this.userName = formValues.email.split('@')[0];
         this.loginSuccess = true;
         setTimeout(() => {
-          this.router.navigate(['/main']);
-        }, 2000); // Redireciona após 3 segundos
+          this.router.navigate(['/boards']);
+        }, 2000);
       },
       error: (error) => {
         console.error('Erro no login:', error);
