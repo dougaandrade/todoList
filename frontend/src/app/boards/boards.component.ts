@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router'; // Import RouterModule
 
 interface Board {
   id: string;
@@ -11,7 +12,7 @@ interface Board {
 @Component({
   selector: 'app-boards',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './boards.component.html',
   styleUrls: ['./boards.component.css']
 })

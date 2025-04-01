@@ -41,12 +41,22 @@ header {
   padding: 10px 15px;
   border-radius: 8px;
   font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .create-board-button:hover {
   background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.create-board-button:active {
+  background-color: #003f7f;
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .boards-container {
@@ -107,10 +117,50 @@ header {
 }
 
 header button {
-  background: #6200ea;
+  background: #007bff;
   color: white;
   border: none;
   padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.header-content {
+
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.back-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+  background-color: #0a4483;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.back-button:active {
+  background-color: #003f7f;
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.delete-icon {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
 }

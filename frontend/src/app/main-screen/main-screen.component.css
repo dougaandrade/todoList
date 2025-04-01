@@ -128,19 +128,29 @@
 }
 
 .boards-button {
-  background: #007bff;
-  color: white;
+  background-color: #007bff;
+  color: #ffffff;
   border: none;
   padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: bold;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+  margin-right: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .boards-button:hover {
-  background: #0056b3;
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.boards-button:active {
+  background-color: #003f7f;
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .search-bar {
