@@ -21,9 +21,18 @@ export class LoginService {
 
   }
 
+  getOwnerId(email: string): Observable<string> {
+    return this.http.get(this.apiUrl+"auth/ownerId/"+email, { responseType: 'text' });
+  }
+
   saveToken(token: string): void {
     localStorage.setItem('jwtToken', token);
   }
+
+  saveOwnerId(ownerId: string): void {
+    localStorage.setItem('ownerId', ownerId);
+  }
+  
 
   getToken(): string | null {
     return localStorage.getItem('jwtToken');

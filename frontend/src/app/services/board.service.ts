@@ -17,6 +17,7 @@ export class BoardService {
   constructor(private readonly http: HttpClient) {}
 
   getAllBoards(): Observable<Board[]> {
-    return this.http.get<Board[]>(`${this.baseUrl}/allBoards`);
+    const ownerId = localStorage.getItem('ownerId');
+    return this.http.get<Board[]>(`${this.baseUrl}/myBoards/${ownerId}`);
   }
 }

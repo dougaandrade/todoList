@@ -49,6 +49,12 @@ export class LoginComponent {
         }, 3000);
       },
     });
+
+    this.loginService.getOwnerId(formValues.email).subscribe({next: (ownerId: string) => {
+      this.loginService.saveOwnerId(ownerId);
+    }})
+
+    
   }
   
   getAllUsers() {

@@ -37,13 +37,14 @@ export class BoardsComponent implements OnInit {
   loadBoards(): void {
     this.boardService.getAllBoards().subscribe({
       next: (data: Array<Board>) => {
-        this.boards = data; // Atualiza this.boards com os dados recebidos
+        this.boards = data;
         console.log('Boards loaded:', this.boards);
       },
       error: (err) => {
         console.error('Failed to load boards:', err);
       }
     });
+
   }
 
   addBoard() {
