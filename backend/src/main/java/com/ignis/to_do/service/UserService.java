@@ -49,7 +49,7 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(userDTO.getId())));
             return true;
         }
-        return userRepository.existsByNameAndEmail(userDTO.getName(), userDTO.getEmail());
+        return userRepository.existsByEmailAndPassword(userDTO.getEmail(), userDTO.getPassword());
     }
 
     public Iterable<UserDTO> getAllUsers(){
