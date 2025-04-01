@@ -14,7 +14,7 @@ export class LoginService {
     return this.http.get(this.apiUrl+"users/all", { responseType: 'text' });
   }
 
-  login(user: { name: string; email: string; password: string }) {
+  login(user: { email: string; password: string }) {
     // debugger;  
     console.log("TA AI");
     return this.http.post(this.apiUrl+"auth/login", user, { responseType: 'text' });
