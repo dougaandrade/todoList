@@ -3,11 +3,10 @@ package com.ignis.to_do.service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ignis.to_do.dto.TaskDTO;
-import com.ignis.to_do.exception.TasksException.TaskNotFoundException;
+import com.ignis.to_do.exception.task_exception.TaskNotFoundException;
 import com.ignis.to_do.model.Task;
 import com.ignis.to_do.model.TaskList;
 import com.ignis.to_do.repository.TaskRepository;
@@ -17,19 +16,23 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TaskService implements TaskReminder {
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private TaskListService taskListService;
+
+    private final TaskRepository taskRepository;
+    private final TaskListService taskListService;
+
+    private static final String TASK_NOT_FOUND = "Task com ID %s nao encontrado";
+
+    public TaskService(TaskRepository taskRepository, TaskListService taskListService) {
+        this.taskRepository = taskRepository;
+        this.taskListService = taskListService;
+    }
 
     public String createTask(TaskDTO taskDTO) {  
 
         StatusValidator taskStatus = new StatusValidator(taskDTO.getStatus());
-        taskStatus.validateStatus(taskDTO.getStatus());
-
         if (taskStatus.validateStatus(taskDTO.getStatus())) {            
             TaskList taskList = taskListService.getList(taskDTO.getListId());        
-            Task task = new Task(taskDTO.getTitle(), taskList,taskDTO.getStatus());      
+            Task task = new Task(taskDTO.getTitle(), taskList, taskDTO.getStatus());      
             taskRepository.save(task);        
             return "Task criada com sucesso";
         }
@@ -38,50 +41,52 @@ public class TaskService implements TaskReminder {
     }
 
     public TaskDTO getTaskById(Long taskId) {  
-        Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new TaskNotFoundException(taskId));    
+        Task task = taskRepository.findById(taskId).orElseThrow(()
+         -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId))); 
         return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()); 
     }
 
-    public Iterable<TaskDTO> getAllTasks() {
+    public void verifyIfTaskExists(Long taskId) {
+        taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId)));
+    }
 
-        return taskRepository.findAll().stream().map(task -> new TaskDTO(task.getId(),
-            task.getTitle(), task.getStatus(), task.getList().getId())).toList();
+    public Iterable<TaskDTO> getAllTasks() {
+        return taskRepository.findAll().stream()
+            .map(task -> new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()))
+            .toList();
     }
     
-    public void deleteTaskById(Long taskId) {        
+    public void deleteTaskById(Long taskId) { 
+        verifyIfTaskExists(taskId);       
         taskRepository.deleteById(taskId);     
     }
 
     @Transactional
     public TaskDTO updateTaskTitle(TaskDTO taskDTO) {
 
-        String title = taskDTO.getTitle();
-        Long taskListId = taskDTO.getId(); 
-        taskRepository.updateTaskTitle(taskListId, title); 
-
-        return new TaskDTO(taskListId, title, taskRepository.findById(taskListId).get().getStatus(),
-        taskRepository.findById(taskListId).get().getList().getId());
+        taskRepository.updateTaskTitle(taskDTO.getId(), taskDTO.getTitle());
+        return getTaskById(taskDTO.getId());
     }
     
     @Override
     public String checkOverdueTasks(Long taskId) {
-        
+        Task task = taskRepository.findById(taskId).orElseThrow(
+            () -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId)));
 
-        Task task = taskRepository.findById(taskId).get();
         LocalDate today = LocalDate.now();
         LocalDate taskDueDate = task.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         if (taskDueDate.isBefore(today)) {
             sendTaskReminder();
             return "Lembrete de tarefa enviado.";
-        } 
-        
-        return "A tarefa ainda não está atrasada.";
- 
+        }
+
+        return "A tarefa ainda nao esta atrasada.";
     }
 
     @Override
-    public void sendTaskReminder() {        
+    public void sendTaskReminder() {
+    // TODO
     }
 }

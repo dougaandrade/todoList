@@ -1,12 +1,7 @@
 package com.ignis.to_do.service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.ignis.to_do.exception.CategoryException.CategoryAlreadyExistsException;
-import com.ignis.to_do.exception.CategoryException.CategoryNotFoundException;
+import com.ignis.to_do.exception.category_exception.CategoryNotFoundException;
 import com.ignis.to_do.model.Category;
 import com.ignis.to_do.repository.CategoryRepository;
 
@@ -15,16 +10,18 @@ import jakarta.transaction.Transactional;
 @Service
 public class CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+
+    private static final String CATEGORY_NOT_FOUND = "Categoria com ID %s nao encontrada";
+
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     public Category createCategory(Category category) {
-
-        Optional<Category> existingCategory = categoryRepository.findByName(category.getName());
-        if (existingCategory.isPresent()) {
-            throw new CategoryAlreadyExistsException("Categoria com nome '" + category.getName() + "' já existe.");
-        }
-        return categoryRepository.save(category);
+        
+        return categoryRepository.findByName(category.getName())
+                .orElseGet(() -> categoryRepository.save(category));
     }
 
     public Iterable<Category> getAllCategories() {
@@ -32,18 +29,24 @@ public class CategoryService {
     }   
     
     public Category getCategoryById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> 
-        new CategoryNotFoundException("Categoria com ID " + categoryId + " não encontrada"));
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND.formatted(categoryId)));
+    }
 
+    public void verifiyIfCategoryExists(Long categoryId) {
+        categoryRepository.findById(categoryId).orElseThrow(() -> 
+        new CategoryNotFoundException(CATEGORY_NOT_FOUND.formatted(categoryId)));
     }
 
     public void deleteCategoryById(Long categoryId) {
+        verifiyIfCategoryExists(categoryId);
         categoryRepository.deleteById(categoryId);
     }
     
     @Transactional
-    public Category updateCategoryName(Long categoryId, String newCategotyName) {
-        categoryRepository.updateCategoryName(categoryId, newCategotyName);
-        return categoryRepository.findById(categoryId).get();
+    public Category updateCategoryName(Category category) {
+        verifiyIfCategoryExists(category.getId());
+        categoryRepository.updateCategoryName(category.getId(), category.getName());
+        return category;
     }
 }
