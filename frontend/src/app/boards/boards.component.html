@@ -6,8 +6,29 @@
     </div>
 
     <input type="text" placeholder="Buscar boards..." class="search-input" />
-    <button class="create-board-button" (click)="addBoard()">+ Criar Novo Board</button>
+    <button class="create-board-button" (click)="toggleCreateForm()">+ Criar Novo Board</button>
+
+    <div *ngIf="showCreateForm" class="overlay" (click)="toggleCreateForm()"></div>
+    <div *ngIf="showCreateForm" class="create-board-form" style="margin-top: 10px;">
+      <h3>Criar Novo Board</h3>
+      <input
+        type="text"
+        placeholder="Título do Board"
+        [(ngModel)]="newBoardTitle"
+        class="form-input"
+      />
+      <textarea
+        placeholder="Descrição (opcional)"
+        [(ngModel)]="newBoardDescription"
+        class="form-textarea"
+      ></textarea>
+      <div class="form-actions">
+        <button (click)="createBoard()" class="form-submit-button">Criar</button>
+        <button (click)="toggleCreateForm()" class="form-cancel-button">Cancelar</button>
+      </div>
+    </div>
   </header>
+
   <div class="boards-container">
     <div *ngFor="let board of boards" class="board-card">
       <h3 class="board-title">{{ board.title }}</h3>

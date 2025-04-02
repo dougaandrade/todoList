@@ -9,6 +9,7 @@ interface Board {
   id: string;
   ownerId: string;
   title: string;
+  description?: string;
 }
 
 @Component({
@@ -27,6 +28,9 @@ interface Board {
 })
 export class BoardsComponent implements OnInit {
   boards: Array<Board> = [];
+  showCreateForm: boolean = false;
+  newBoardTitle: string = '';
+  newBoardDescription: string = '';
 
   constructor(private readonly boardService: BoardService) {}
 
@@ -47,16 +51,54 @@ export class BoardsComponent implements OnInit {
 
   }
 
-  addBoard() {
-    const newBoard: Board = {
-      id: Date.now().toString(),
-      ownerId: '1', // Exemplo de valor fixo
-      title: `New Board ${this.boards.length + 1}`
-    };
-    this.boards.push(newBoard);
+  deleteBoard(id: string) {
+    this.boardService.deleteBoard(id).subscribe({
+      next: () => {
+        console.log('Board deleted successfully');
+      },
+      error: (err) => {
+        console.error('Failed to delete board:', err);
+      }
+    })
+
+    this.boards = this.boards.filter(board => board.id !== id);
+    window.location.reload();
+
+    console.log('Board deleted:', id);
   }
 
-  deleteBoard(id: string) {
-    this.boards = this.boards.filter(board => board.id !== id);
+  toggleCreateForm(): void {
+    this.showCreateForm = !this.showCreateForm;
+    this.newBoardTitle = '';
+    this.newBoardDescription = '';
+  }
+
+  createBoard(): void {
+    const ownerId = this.boardService.getOwnerId();
+    if (!this.newBoardTitle.trim()) {
+      alert('O título é obrigatório!');
+      return;
+    }
+
+    const newBoard: Board = {
+      id: "",
+      ownerId: ownerId ?? '',
+      title: this.newBoardTitle,
+      description: this.newBoardDescription
+    };
+
+    this.boards.push(newBoard);
+    this.boardService.createBoard(newBoard).subscribe({
+      next: (data: Board) => {
+        console.log('Board created:', data);
+      },
+      error: (err) => {
+        console.error('Failed to create board:', err);
+      }
+    })
+    
+    this.toggleCreateForm();
+    window.location.reload();
+
   }
 }
