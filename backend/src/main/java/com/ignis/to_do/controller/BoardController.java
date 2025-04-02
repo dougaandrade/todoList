@@ -1,6 +1,5 @@
 package com.ignis.to_do.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +21,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Board Controller", description = "Gerenciamento de Boards")
 public class BoardController {
 
-    @Autowired
-    private BoardService boardService;
+    private final BoardService boardService;
+
+    public BoardController(BoardService boardService) {
+        this.boardService = boardService;
+    }
 
     @PostMapping("/createBoard")
     public ResponseEntity<BoardDTO> createBoard(

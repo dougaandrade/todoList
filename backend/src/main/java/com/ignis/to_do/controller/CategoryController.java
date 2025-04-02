@@ -1,11 +1,11 @@
 package com.ignis.to_do.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +19,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Category Controller", description = "Gerenciamento de categorias")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
     
     @PostMapping("/createCategory/{name}")
     public Category createCategory(@PathVariable String name) {
@@ -39,12 +43,11 @@ public class CategoryController {
         return categoryService.getAllCategories();
     }
     
-    @PutMapping("/updateCategoryName/{categoryId}/{name}")
+    @PutMapping("/updateCategoryName")
     public Category updateCategoryName(
-        @PathVariable Long categoryId,
-        @PathVariable String newCategoryName) {
+        @RequestBody Category category) {
             
-        return categoryService.updateCategoryName(categoryId, newCategoryName);
+        return categoryService.updateCategoryName(category);
     }
 
     @DeleteMapping("/deleteCategory/{categoryId}")
