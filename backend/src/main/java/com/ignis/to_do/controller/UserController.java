@@ -17,38 +17,35 @@ import com.ignis.to_do.service.UserService;
 import com.ignis.to_do.validator.UserValidator;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @RestController
 @RequestMapping("/users")
 @Tag(name = "User Controller", description = "Gerenciamento de Usuários")
+@AllArgsConstructor
 public class UserController {
 
-    
     private final UserService userService;
     private final UserValidator userValidator;
 
-    public UserController(UserService userService, UserValidator userValidator) {
-        this.userValidator = userValidator;
-        this.userService = userService;
-    }
-
     @PostMapping("/createUser")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        
+
         return ResponseEntity.ok(userService.createUser(userDTO));
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
-        
+
         boolean isValid = userValidator.validateUser(
-           userDTO.getEmail(), userDTO.getPassword());
-        
+                userDTO.getEmail(), userDTO.getPassword());
+
         if (isValid) {
             return ResponseEntity.ok("Logado com sucesso");
-        } 
+        }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-            "Usuário não encontrado");
+                "Usuário não encontrado");
     }
 
     @GetMapping("/{userId}")
@@ -56,6 +53,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserDTOById(userId));
 
     }
+
     @GetMapping("/all")
     public Iterable<UserDTO> getAllUsers() {
 
@@ -64,21 +62,21 @@ public class UserController {
 
     @PutMapping("/updateUser")
     public UserDTO updateUserById(
-        @RequestBody UserDTO userDTO) {
+            @RequestBody UserDTO userDTO) {
 
         return userService.updateUserById(userDTO);
     }
 
     @PutMapping("/updatePassword")
     public void updatePasswordById(
-        @RequestBody UserDTO userDTO) {
-        
+            @RequestBody UserDTO userDTO) {
+
         userService.updatePasswordById(userDTO);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable long userId) {
-        
+
         userService.deleteUserById(userId);
     }
 

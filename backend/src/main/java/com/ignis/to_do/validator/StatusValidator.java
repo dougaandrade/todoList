@@ -10,13 +10,16 @@ import lombok.Setter;
 public class StatusValidator {
     private String status;
     private List<String> statusList = List.of("PENDING", "IN_PROGRESS", "DONE");
+
     public StatusValidator(String status) {
+
         this.status = status;
     }
 
     public boolean validateStatus(String status) {
-        
+
         return statusList.contains(status);
+
     }
 
 }
