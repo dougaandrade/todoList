@@ -44,8 +44,8 @@ class UserControllerTest {
         when(userService.createUser(any(UserDTO.class))).thenReturn(userDTO);
 
         mockMvc.perform(post("/users/createUser")
-                        .contentType("application/json")
-                        .content("{\"name\":\"João\",\"email\":\"joao@email.com\",\"password\":\"senha123\"}"))
+                .contentType("application/json")
+                .content("{\"name\":\"João\",\"email\":\"joao@email.com\",\"password\":\"senha123\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("João"))
                 .andExpect(jsonPath("$.email").value("joao@email.com"))
@@ -60,10 +60,10 @@ class UserControllerTest {
         when(userValidator.validateUser("joao@email.com", "senha123")).thenReturn(true);
 
         mockMvc.perform(post("/users/login")
-                            .contentType("application/json")
-                            .content("{\"name\":\"João\",\"email\":\"joao@email.com\",\"password\":\"senha123\"}"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string("Logado com sucesso"));
+                .contentType("application/json")
+                .content("{\"name\":\"João\",\"email\":\"joao@email.com\",\"password\":\"senha123\"}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Logado com sucesso"));
 
         verify(userValidator, times(1)).validateUser("joao@email.com", "senha123");
     }

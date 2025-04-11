@@ -83,7 +83,7 @@ class UserServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         doNothing().when(userRepository).updateUser(
-            1L, "Novo Nome", "novo@email.com", "654321");
+                1L, "Novo Nome", "novo@email.com", "654321");
 
         UserDTO updatedUser = userService.updateUserById(new UserDTO(1L, "Novo Nome", "novo@email.com", "654321"));
 
@@ -116,11 +116,11 @@ class UserServiceTest {
 
     @Test
     void testGetUser() {
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-    
+
         User foundUser = userService.getUser(1L);
-    
+
         assertNotNull(foundUser);
         assertEquals(user.getId(), foundUser.getId());
         assertEquals(user.getName(), foundUser.getName());
