@@ -12,29 +12,25 @@ import com.ignis.to_do.dto.UserDTO;
 import com.ignis.to_do.security.JwtUtil;
 import com.ignis.to_do.service.UserService;
 
-
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class AuthController {
 
     private final JwtUtil jwtUtil;
     private final UserService userService;
 
-    public AuthController(JwtUtil jwtUtil, UserService userService) {
-        this.userService = userService;
-        this.jwtUtil = jwtUtil;
-    }
-
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
 
-        if (userService.verifyIfUserExists(userDTO)){
+        if (userService.verifyIfUserExists(userDTO)) {
             String token = jwtUtil.generateToken(userDTO);
             return ResponseEntity.ok(token);
         }
 
-        return ResponseEntity.status(401).body("Usuário não encontrado");   
+        return ResponseEntity.status(401).body("Usuário não encontrado");
 
     }
 

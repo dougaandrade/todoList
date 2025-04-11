@@ -13,20 +13,17 @@ import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.BoardRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
-@Service    
+@Service
+@AllArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final UserService userService; 
-    
+    private final UserService userService;
+
     private static final String BOARD_NOT_FOUND = "Board com ID %s nao encontrado";
     private static final String BOARD_ALREADY_EXISTS = "Board com nome %s já existe";
-
-    public BoardService(BoardRepository boardRepository, UserService userService) {
-        this.boardRepository = boardRepository;
-        this.userService = userService;
-    }
 
     public BoardDTO createBoard(BoardDTO boardDTO) {
 
@@ -35,45 +32,45 @@ public class BoardService {
             throw new BoardAlreadyExistsException(BOARD_ALREADY_EXISTS.formatted(boardDTO.getTitle()));
         }
 
-        User user = userService.getUser(boardDTO.getOwnerId());   
+        User user = userService.getUser(boardDTO.getOwnerId());
         Board board = new Board(boardDTO.getTitle(), user);
         boardRepository.save(board);
         return new BoardDTO(board.getId(), board.getTitle(),
-            board.getOwner().getId());
+                board.getOwner().getId());
     }
 
     public BoardDTO getBoardById(Long boardId) {
 
-        Board board = boardRepository.findById(boardId).orElseThrow(()
-         -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
-        return new BoardDTO(board.getId(), board.getTitle(), 
-            board.getOwner().getId());
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
+        return new BoardDTO(board.getId(), board.getTitle(),
+                board.getOwner().getId());
     }
 
     public void verifyIfBoardExists(Long boardId) {
-        boardRepository.findById(boardId).orElseThrow(()
-         -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
+        boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
     }
 
     public Iterable<BoardDTO> getAllBoards() {
-        
+
         return boardRepository.findAll().stream().map(board -> new BoardDTO(
-            board.getId(), board.getTitle(), board.getOwner().getId())).toList();
+                board.getId(), board.getTitle(), board.getOwner().getId())).toList();
     }
 
     public Iterable<BoardDTO> getMyBoardsByOwnerId(Long ownerId) {
 
-        User user = userService.getUser(ownerId);  
+        User user = userService.getUser(ownerId);
         return user.getBoards().stream().map(board -> new BoardDTO(board.getId(),
-             board.getTitle(), board.getOwner().getId())).toList();
+                board.getTitle(), board.getOwner().getId())).toList();
     }
 
-    public Iterable<TaskListDTO> myTasksListsByBoardId(Long boardId){
+    public Iterable<TaskListDTO> myTasksListsByBoardId(Long boardId) {
 
-        Board board = boardRepository.findById(boardId).orElseThrow(()
-         -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
         return board.getTaskLists().stream().map(taskList -> new TaskListDTO(
-            taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
+                taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
     }
 
     public boolean isFavorite(Long boardId) {
@@ -84,13 +81,14 @@ public class BoardService {
 
     @Transactional
     public void toggleFavorite(Long boardId) {
-        
+
         verifyIfBoardExists(boardId);
-        Board board = boardRepository.findById(boardId).orElseThrow(()
-        -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
 
         boardRepository.updateFavorite(boardId, !board.isFavorite());
     }
+
     public void deleteBoardById(Long boardId) {
         verifyIfBoardExists(boardId);
         boardRepository.deleteById(boardId);
@@ -102,14 +100,13 @@ public class BoardService {
         verifyIfBoardExists(boardDTO.getId());
         boardRepository.updateTitle(boardDTO.getId(), boardDTO.getTitle());
         Long boardId = boardDTO.getId();
-        Board board = boardRepository.findById(boardId).orElseThrow(()
-        -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
         return new BoardDTO(boardId, boardDTO.getTitle(), board.getOwner().getId());
     }
 
-    
     public Board getBoard(Long boardId) {
-        return boardRepository.findById(boardId).orElseThrow(()
-        -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(BOARD_NOT_FOUND.formatted(boardId)));
     }
 }

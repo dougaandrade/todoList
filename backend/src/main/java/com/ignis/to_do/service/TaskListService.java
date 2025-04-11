@@ -9,8 +9,10 @@ import com.ignis.to_do.model.TaskList;
 import com.ignis.to_do.repository.TaskListRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class TaskListService {
 
     private final TaskListRepository taskListRepository;
@@ -19,11 +21,6 @@ public class TaskListService {
     private static final String TASK_LIST_NOT_FOUND = "TaskList com ID %s nao encontrado";
     private static final String TASK_LIST_ALREADY_EXISTS = "TaskList com nome %s já existe";
 
-    public TaskListService(TaskListRepository taskListRepository, BoardService boardService) {
-        this.taskListRepository = taskListRepository;
-        this.boardService = boardService;
-    }
-    
     public TaskListDTO createTaskList(TaskListDTO taskListDTO) {
         if (taskListRepository.findByName(taskListDTO.getName()).isPresent()) {
             throw new TaskListAlreadyExistsException(TASK_LIST_ALREADY_EXISTS.formatted(taskListDTO.getName()));
@@ -31,8 +28,8 @@ public class TaskListService {
 
         Board board = boardService.getBoard(taskListDTO.getBoardId());
         TaskList taskList = new TaskList(taskListDTO.getName(), board);
-        return new TaskListDTO(taskListRepository.save(taskList).getId(), taskList.getName(), 
-            taskList.getBoard().getId());
+        return new TaskListDTO(taskListRepository.save(taskList).getId(), taskList.getName(),
+                taskList.getBoard().getId());
     }
 
     public TaskListDTO getTaskListById(Long taskLitsId) {
@@ -42,27 +39,27 @@ public class TaskListService {
     }
 
     public void verifyIfTaskListExists(Long taskListId) {
-        taskListRepository.findById(taskListId).orElseThrow(() -> 
-        new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListId)));
+        taskListRepository.findById(taskListId)
+                .orElseThrow(() -> new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListId)));
     }
 
     public Iterable<TaskListDTO> getAllTaskLists() {
         return taskListRepository.findAll().stream().map(taskList -> new TaskListDTO(
-            taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
+                taskList.getId(), taskList.getName(), taskList.getBoard().getId())).toList();
     }
 
     public TaskList getList(Long taskListId) {
-        return taskListRepository.findById(taskListId).orElseThrow(() -> 
-        new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListId)));        
+        return taskListRepository.findById(taskListId)
+                .orElseThrow(() -> new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListId)));
     }
 
-    public void deleteTaskList(TaskList taskList) {     
-        verifyIfTaskListExists(taskList.getId());   
-        taskListRepository.delete(taskList);        
+    public void deleteTaskList(TaskList taskList) {
+        verifyIfTaskListExists(taskList.getId());
+        taskListRepository.delete(taskList);
     }
 
     public void deleteTaskListById(Long taskListId) {
-        verifyIfTaskListExists(taskListId);   
+        verifyIfTaskListExists(taskListId);
         taskListRepository.deleteById(taskListId);
     }
 
@@ -70,9 +67,11 @@ public class TaskListService {
     public TaskListDTO updateTaskListTitle(TaskListDTO taskListDTO) {
 
         taskListRepository.updateTaskListTitle(taskListDTO.getId(), taskListDTO.getName());
-        return new TaskListDTO(taskListDTO.getId(), taskListDTO.getName(), 
-                                taskListRepository.findById(taskListDTO.getId()).orElseThrow(() -> 
-                                new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListDTO.getId()))).getBoard().getId());
+        return new TaskListDTO(taskListDTO.getId(), taskListDTO.getName(),
+                taskListRepository.findById(taskListDTO.getId())
+                        .orElseThrow(
+                                () -> new TaskListNotFoundException(TASK_LIST_NOT_FOUND.formatted(taskListDTO.getId())))
+                        .getBoard().getId());
     }
 
     @Transactional

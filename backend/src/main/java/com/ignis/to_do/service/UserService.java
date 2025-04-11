@@ -8,22 +8,16 @@ import com.ignis.to_do.model.User;
 import com.ignis.to_do.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-    
-    
+
     private final UserRepository userRepository;
 
     private static final String USER_NOT_FOUND = "Usuário com ID %s nao encontrado";
     private static final String USER_ALREADY_EXISTS = "Usuário com email %s já existe";
-
-
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
 
     public UserDTO createUser(UserDTO userDTO) {
         if (userDTO.getId() != null) {
@@ -44,27 +38,27 @@ public class UserService {
 
     public String getOwnerId(String email) {
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(email)));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(email)));
         return String.valueOf(user.getId());
-        
+
     }
 
     public boolean verifyIfUserExists(UserDTO userDTO) {
 
         if (userDTO.getId() != null) {
             userRepository.findById(userDTO.getId())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(userDTO.getId())));
+                    .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(userDTO.getId())));
             return true;
         }
         return userRepository.existsByEmailAndPassword(userDTO.getEmail(), userDTO.getPassword());
     }
 
-    public Iterable<UserDTO> getAllUsers(){
+    public Iterable<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(user -> new UserDTO(user.getId(),
-            user.getName(), user.getEmail(), user.getPassword())).toList();
+                user.getName(), user.getEmail(), user.getPassword())).toList();
     }
 
-    
     @Transactional
     public UserDTO updateUserById(UserDTO userDTO) {
 
@@ -73,12 +67,10 @@ public class UserService {
         return new UserDTO(userDTO.getId(), userDTO.getName(), userDTO.getEmail(), userDTO.getPassword());
     }
 
+    public void deleteUserById(Long userId) {
 
-
-    public void deleteUserById(Long userId){ 
-
-        User user = userRepository.findById(userId).orElseThrow(()
-         -> new UserNotFoundException(USER_NOT_FOUND.formatted(userId)));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(userId)));
         userRepository.delete(user);
     }
 
@@ -88,9 +80,9 @@ public class UserService {
         verifyIfUserExists(userDTO);
         userRepository.updatePasswordById(userDTO.getId(), userDTO.getPassword());
     }
-    
-    public User getUser(Long userId){
-        return userRepository.findById(userId).orElseThrow(()
-         -> new UserNotFoundException(USER_NOT_FOUND.formatted(userId)));
+
+    public User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND.formatted(userId)));
     }
 }

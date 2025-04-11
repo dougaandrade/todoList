@@ -15,17 +15,15 @@ import com.ignis.to_do.service.TaskService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/task")
 @Tag(name = "Task Controller", description = "Gerenciamento de tarefas")
+@AllArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
-
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
 
     @PostMapping("/createTask")
     public ResponseEntity<String> createTask(@Valid @RequestBody TaskDTO taskDTO) {
@@ -37,29 +35,29 @@ public class TaskController {
     public TaskDTO getTaskById(@PathVariable Long taskId) {
 
         return taskService.getTaskById(taskId);
-    }   
+    }
 
     @GetMapping("/getAllTasks")
     public Iterable<TaskDTO> getAllTasks() {
 
         return taskService.getAllTasks();
-    }   
-    
+    }
+
     @PutMapping("/updateTaskTitle")
     public TaskDTO updateTaskTitle(
-        @RequestBody TaskDTO taskDTO) {
-            
+            @RequestBody TaskDTO taskDTO) {
+
         return taskService.updateTaskTitle(taskDTO);
     }
 
     @DeleteMapping("/deleteTask/{taskId}")
     public void deleteTaskById(@PathVariable Long taskId) {
-        
-        taskService.deleteTaskById(taskId); 
+
+        taskService.deleteTaskById(taskId);
     }
 
     @GetMapping("/checkOverdueTasks/{taskId}")
     public String checkOverdueTasks(@PathVariable Long taskId) {
-        return taskService.checkOverdueTasks(taskId); 
+        return taskService.checkOverdueTasks(taskId);
     }
-}   
+}

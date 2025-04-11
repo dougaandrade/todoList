@@ -13,8 +13,10 @@ import com.ignis.to_do.repository.TaskRepository;
 import com.ignis.to_do.validator.StatusValidator;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class TaskService implements TaskReminder {
 
     private final TaskRepository taskRepository;
@@ -22,28 +24,23 @@ public class TaskService implements TaskReminder {
 
     private static final String TASK_NOT_FOUND = "Task com ID %s nao encontrado";
 
-    public TaskService(TaskRepository taskRepository, TaskListService taskListService) {
-        this.taskRepository = taskRepository;
-        this.taskListService = taskListService;
-    }
-
-    public String createTask(TaskDTO taskDTO) {  
+    public String createTask(TaskDTO taskDTO) {
 
         StatusValidator taskStatus = new StatusValidator(taskDTO.getStatus());
-        if (taskStatus.validateStatus(taskDTO.getStatus())) {            
-            TaskList taskList = taskListService.getList(taskDTO.getListId());        
-            Task task = new Task(taskDTO.getTitle(), taskList, taskDTO.getStatus());      
-            taskRepository.save(task);        
+        if (taskStatus.validateStatus(taskDTO.getStatus())) {
+            TaskList taskList = taskListService.getList(taskDTO.getListId());
+            Task task = new Task(taskDTO.getTitle(), taskList, taskDTO.getStatus());
+            taskRepository.save(task);
             return "Task criada com sucesso";
         }
 
         return "Status inválido";
     }
 
-    public TaskDTO getTaskById(Long taskId) {  
-        Task task = taskRepository.findById(taskId).orElseThrow(()
-         -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId))); 
-        return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()); 
+    public TaskDTO getTaskById(Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId)));
+        return new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId());
     }
 
     public void verifyIfTaskExists(Long taskId) {
@@ -53,13 +50,13 @@ public class TaskService implements TaskReminder {
 
     public Iterable<TaskDTO> getAllTasks() {
         return taskRepository.findAll().stream()
-            .map(task -> new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()))
-            .toList();
+                .map(task -> new TaskDTO(task.getId(), task.getTitle(), task.getStatus(), task.getList().getId()))
+                .toList();
     }
-    
-    public void deleteTaskById(Long taskId) { 
-        verifyIfTaskExists(taskId);       
-        taskRepository.deleteById(taskId);     
+
+    public void deleteTaskById(Long taskId) {
+        verifyIfTaskExists(taskId);
+        taskRepository.deleteById(taskId);
     }
 
     @Transactional
@@ -68,11 +65,11 @@ public class TaskService implements TaskReminder {
         taskRepository.updateTaskTitle(taskDTO.getId(), taskDTO.getTitle());
         return getTaskById(taskDTO.getId());
     }
-    
+
     @Override
     public String checkOverdueTasks(Long taskId) {
         Task task = taskRepository.findById(taskId).orElseThrow(
-            () -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId)));
+                () -> new TaskNotFoundException(TASK_NOT_FOUND.formatted(taskId)));
 
         LocalDate today = LocalDate.now();
         LocalDate taskDueDate = task.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -87,6 +84,6 @@ public class TaskService implements TaskReminder {
 
     @Override
     public void sendTaskReminder() {
-    // TODO
+        // TODO
     }
 }

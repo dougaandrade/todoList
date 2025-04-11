@@ -15,31 +15,29 @@ import com.ignis.to_do.dto.TaskListDTO;
 import com.ignis.to_do.service.BoardService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/board")
 @Tag(name = "Board Controller", description = "Gerenciamento de Boards")
+@AllArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
-    public BoardController(BoardService boardService) {
-        this.boardService = boardService;
-    }
-
     @PostMapping("/createBoard")
     public ResponseEntity<BoardDTO> createBoard(
-        @RequestBody BoardDTO boardDTO){
+            @RequestBody BoardDTO boardDTO) {
 
         return ResponseEntity.ok(boardService.createBoard(boardDTO));
     }
-    
+
     @GetMapping("/getBoard/{boardId}")
     public ResponseEntity<BoardDTO> getBoardDTO(
-        @PathVariable Long boardId) {
+            @PathVariable Long boardId) {
 
         return ResponseEntity.ok(boardService.getBoardById(boardId));
-    }   
+    }
 
     @GetMapping("/allBoards")
     public Iterable<BoardDTO> getAllBoards() {
@@ -49,29 +47,29 @@ public class BoardController {
 
     @GetMapping("myBoards/{boardId}")
     public Iterable<BoardDTO> getMyBoardsByOwnerId(
-        @PathVariable Long boardId) {
-        
+            @PathVariable Long boardId) {
+
         return boardService.getMyBoardsByOwnerId(boardId);
     }
 
     @GetMapping("/isFavorite/{boardId}")
     public Boolean isFavorite(
-        @PathVariable Long boardId) {  
+            @PathVariable Long boardId) {
 
         return boardService.isFavorite(boardId);
     }
 
     @GetMapping("myTasksByBoard/{boardId}")
     public Iterable<TaskListDTO> myTasksListsByBoard(
-        @PathVariable Long boardId){
+            @PathVariable Long boardId) {
 
         return boardService.myTasksListsByBoardId(boardId);
     }
 
     @PutMapping("/updateBoardTitle")
     public BoardDTO updateBoardTitle(
-        @RequestBody BoardDTO boardDTO) {
-            
+            @RequestBody BoardDTO boardDTO) {
+
         return boardService.updateBoardTitle(boardDTO);
     }
 
@@ -79,7 +77,7 @@ public class BoardController {
     public void toggleFavorite(@PathVariable Long boardId) {
         boardService.toggleFavorite(boardId);
     }
-    
+
     @DeleteMapping("/deleteBoard/{boardId}")
     public void deleteBoardById(@PathVariable Long boardId) {
 

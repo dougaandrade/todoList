@@ -13,19 +13,16 @@ import com.ignis.to_do.model.Category;
 import com.ignis.to_do.service.CategoryService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/category")
 @Tag(name = "Category Controller", description = "Gerenciamento de categorias")
+@AllArgsConstructor
 public class CategoryController {
 
-    
     private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-    
     @PostMapping("/createCategory/{name}")
     public Category createCategory(@PathVariable String name) {
         Category category = new Category(name);
@@ -34,7 +31,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public Category getCategoryById(@PathVariable Long categoryId) {        
+    public Category getCategoryById(@PathVariable Long categoryId) {
         return categoryService.getCategoryById(categoryId);
     }
 
@@ -42,11 +39,11 @@ public class CategoryController {
     public Iterable<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
-    
+
     @PutMapping("/updateCategoryName")
     public Category updateCategoryName(
-        @RequestBody Category category) {
-            
+            @RequestBody Category category) {
+
         return categoryService.updateCategoryName(category);
     }
 

@@ -15,31 +15,30 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig{
+@AllArgsConstructor
+public class SecurityConfig {
 
     private final Dotenv dotenv;
-
-    public SecurityConfig(Dotenv dotenv) {
-        this.dotenv = dotenv;
-    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http
-            .cors(cors -> cors.configure(http))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/users/**", "/board/**").authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
-        
-        return http.build();    
+                .cors(cors -> cors.configure(http))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html")
+                        .permitAll()
+                        .requestMatchers("/users/**", "/board/**").authenticated())
+                .oauth2ResourceServer(
+                        oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+
+        return http.build();
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -58,10 +57,10 @@ public class SecurityConfig{
         if (secretKey == null || secretKey.length() < 32) {
             throw new IllegalStateException("JWT_SECRET_KEY não configurada ou muito curta no .env");
         }
-        
+
         byte[] keyBytes = secretKey.getBytes();
         SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(secretKeySpec).build();
     }
-    
+
 }
